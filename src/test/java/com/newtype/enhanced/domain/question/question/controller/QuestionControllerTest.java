@@ -144,4 +144,16 @@ class QuestionControllerTest {
                 .andExpect(content().string(containsString("pagination")))
                 .andExpect(content().string(containsString("/question/list?page=1")));
     }
+
+    @Test
+    @DisplayName("GET /question/list: 번호는 전체 개수에서 거꾸로 매긴다")
+    void t11() throws Exception {
+        for (int i = 1; i <= 15; i++) {
+            questionRepository.save(new Question("페이징 질문 %02d".formatted(i), "내용"));
+        }
+
+        mvc.perform(get("/question/list").param("page", "1"))
+                .andExpect(content().string(containsString("<td>5</td>")))
+                .andExpect(content().string(not(containsString("<td>6</td>"))));
+    }
 }
