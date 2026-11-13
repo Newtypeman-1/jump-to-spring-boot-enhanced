@@ -258,3 +258,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: 작성자만 답변을 수정하는 화면·처리, 답변 단독 조회용 AnswerRepository·AnswerService 추가
 - 이유: 답변 수정 URL(/answer/modify/{id})은 답변 id만 있어 질문을 거치지 않고 답변을 찾아야 함
 - 결과: 테스트 51개 통과, 브라우저에서 user1 답변 수정 후 상세 반영, 남의 답변 수정 화면 403 확인
+
+### 024-04 수정과 삭제(책 3-09), 답변 삭제
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/024-04)
+- 작업: 작성자만 답변을 삭제하는 POST /answer/delete/{id}와 삭제 버튼 추가, 삭제는 Question.deleteAnswer로 처리
+- 이유: 작성자가 자신의 답변을 지울 수 있게
+- 결과: 테스트 53개 통과, 브라우저에서 답변 삭제 후 "0개의 답변이 있습니다." 확인

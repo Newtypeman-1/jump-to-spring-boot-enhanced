@@ -1,6 +1,7 @@
 package com.newtype.enhanced.domain.question.answer.controller;
 
 import com.newtype.enhanced.domain.question.answer.entity.Answer;
+import com.newtype.enhanced.domain.question.answer.repository.AnswerRepository;
 import com.newtype.enhanced.domain.question.question.entity.Question;
 import com.newtype.enhanced.domain.question.question.repository.QuestionRepository;
 import com.newtype.enhanced.domain.user.user.entity.SiteUser;
@@ -34,6 +35,9 @@ class AnswerControllerTest {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @Autowired
     private UserService userService;
@@ -135,5 +139,30 @@ class AnswerControllerTest {
                 .andExpect(status().isForbidden());
 
         assertThat(answer.getContent()).isEqualTo("수정 전 답변");
+    }
+
+    @Test
+    @DisplayName("POST /answer/delete/{id}: 작성자는 삭제하고, 목록에서 빠진 답변은 orphanRemoval로 DB에서도 삭제")
+    void t8() throws Exception {
+        Answer answer = saveAnswer();
+        int questionId = answer.getQuestion().getId();
+
+        mvc.perform(post("/answer/delete/" + answer.getId()).with(csrf()).with(user("user1")))
+                .andExpect(redirectedUrl("/question/detail/" + questionId));
+
+        answerRepository.flush();
+        assertThat(answerRepository.findById(answer.getId())).isEmpty();
+    }
+
+    @Test
+    @DisplayName("POST /answer/delete/{id}: 작성자가 아니면 403")
+    void t9() throws Exception {
+        Answer answer = saveAnswer();
+        userService.create("user2", "1234", "user2@test.com");
+
+        mvc.perform(post("/answer/delete/" + answer.getId()).with(csrf()).with(user("user2")))
+                .andExpect(status().isForbidden());
+
+        assertThat(answer.getQuestion().getAnswerList()).hasSize(1);
     }
 }

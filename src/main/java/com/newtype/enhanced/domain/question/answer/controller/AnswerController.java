@@ -100,6 +100,16 @@ public class AnswerController {
         return "redirect:/question/detail/%d".formatted(answer.getQuestion().getId());
     }
 
+    @PostMapping("/delete/{id}")
+    @PreAuthorize("isAuthenticated()")
+    @Transactional
+    public String delete(@PathVariable int id, Principal principal) {
+        Answer answer = findAnswerOwnedBy(id, principal);
+        Question question = answer.getQuestion();
+        question.deleteAnswer(answer);
+        return "redirect:/question/detail/%d".formatted(question.getId());
+    }
+
     private Answer findAnswerOwnedBy(int id, Principal principal) {
         Answer answer = answerService.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("answer not found"));
