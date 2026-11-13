@@ -8,6 +8,18 @@
 <body>
 <th:block layout:fragment="content">
     <div class="container my-3">
+        <div class="row my-3">
+            <div class="col-6">
+                <a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
+            </div>
+            <div class="col-6">
+                <!-- 검색: GET 폼으로 kw를 보내고 1페이지부터 조회 -->
+                <form th:action="@{/question/list}" method="get" class="input-group">
+                    <input type="text" name="kw" class="form-control" th:value="${kw}" placeholder="검색어">
+                    <button class="btn btn-outline-secondary" type="submit">찾기</button>
+                </form>
+            </div>
+        </div>
         <table class="table">
             <thead class="table-dark">
             <tr>
@@ -34,19 +46,18 @@
         <div th:if="${!paging.isEmpty()}">
             <ul class="pagination justify-content-center">
                 <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
-                    <a class="page-link" th:href="@{/question/list(page=${paging.number - 1})}">이전</a>
+                    <a class="page-link" th:href="@{/question/list(page=${paging.number - 1}, kw=${kw})}">이전</a>
                 </li>
                 <li th:each="page : ${#numbers.sequence(0, paging.totalPages - 1)}"
                     th:if="${page >= paging.number - 5 and page <= paging.number + 5}"
                     th:classappend="${page == paging.number} ? 'active'" class="page-item">
-                    <a th:text="${page + 1}" class="page-link" th:href="@{/question/list(page=${page})}"></a>
+                    <a th:text="${page + 1}" class="page-link" th:href="@{/question/list(page=${page}, kw=${kw})}"></a>
                 </li>
                 <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
-                    <a class="page-link" th:href="@{/question/list(page=${paging.number + 1})}">다음</a>
+                    <a class="page-link" th:href="@{/question/list(page=${paging.number + 1}, kw=${kw})}">다음</a>
                 </li>
             </ul>
         </div>
-        <a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
     </div>
 </th:block>
 </body>

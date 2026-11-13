@@ -302,4 +302,19 @@ class QuestionControllerTest {
         mvc.perform(get("/question/detail/" + question.getId()))
                 .andExpect(content().string(containsString("bg-success\">1</span>")));
     }
+
+    @Test
+    @DisplayName("GET /question/list?kw=: 검색 결과만 보여주고, 페이지 링크에 검색어를 유지한다")
+    void t23() throws Exception {
+        for (int i = 1; i <= 15; i++) {
+            questionRepository.save(new Question(author, "스프링 질문 %02d".formatted(i), "내용"));
+        }
+        questionRepository.save(new Question(author, "관계없는 글", "내용"));
+
+        mvc.perform(get("/question/list").param("kw", "스프링"))
+                .andExpect(content().string(containsString("스프링 질문 15")))
+                .andExpect(content().string(not(containsString("관계없는 글"))))
+                .andExpect(content().string(containsString("value=\"스프링\"")))
+                .andExpect(content().string(containsString("page=1&amp;kw=")));
+    }
 }
