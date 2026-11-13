@@ -38,9 +38,14 @@ public class QuestionController {
 
     @GetMapping("/list")
     @Transactional(readOnly = true)
-    public String list(@RequestParam(defaultValue = "0") int page, Model model) {
-        Page<Question> paging = questionService.findAll(page);
+    public String list(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "") String kw,
+            Model model
+    ) {
+        Page<Question> paging = questionService.findAll(page, kw);
         model.addAttribute("paging", paging);
+        model.addAttribute("kw", kw);
         return "question/question/list";
     }
 

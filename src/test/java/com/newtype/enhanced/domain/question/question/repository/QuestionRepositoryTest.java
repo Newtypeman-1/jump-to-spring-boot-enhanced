@@ -8,6 +8,8 @@ import com.newtype.enhanced.domain.user.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -180,5 +182,26 @@ class QuestionRepositoryTest {
         questionRepository.flush();
 
         assertThat(question.isModified()).isTrue();
+    }
+
+    @Test
+    @DisplayName("findAllByKeyword: 제목·내용·작성자·답변 내용·답변 작성자로 검색, 같은 질문은 한 번만")
+    void t13() {
+        SiteUser answerer = userService.create("answerer", "1234", "answerer@test.com");
+        Question q1 = questionRepository.save(new Question(author, "스프링 질문", "내용"));
+        Question q2 = questionRepository.save(new Question(author, "다른 질문", "부트 내용"));
+        Question q3 = questionRepository.save(new Question(author, "세 번째", "내용"));
+        q3.addAnswer(answerer, "스프링 답변 1");
+        q3.addAnswer(answerer, "스프링 답변 2");
+        questionRepository.flush();
+
+        assertThat(questionRepository.findAllByKeyword("스프링", PageRequest.of(0, 10)).getContent())
+                .containsExactlyInAnyOrder(q1, q3);
+        assertThat(questionRepository.findAllByKeyword("부트", PageRequest.of(0, 10)).getContent())
+                .containsExactly(q2);
+
+        Page<Question> byAnswerer = questionRepository.findAllByKeyword("answerer", PageRequest.of(0, 10));
+        assertThat(byAnswerer.getContent()).containsExactly(q3);
+        assertThat(byAnswerer.getTotalElements()).isEqualTo(1);
     }
 }

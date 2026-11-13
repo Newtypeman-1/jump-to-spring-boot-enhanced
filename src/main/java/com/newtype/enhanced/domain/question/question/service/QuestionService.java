@@ -18,8 +18,14 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
 
-    public Page<Question> findAll(int page) {
-        return questionRepository.findAll(PageRequest.of(page, 10, Sort.by(Sort.Order.desc("id"))));
+    public Page<Question> findAll(int page, String kw) {
+        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Order.desc("id")));
+
+        if (kw.isBlank()) {
+            return questionRepository.findAll(pageRequest);
+        }
+
+        return questionRepository.findAllByKeyword(kw, pageRequest);
     }
 
     public Optional<Question> findById(int id) {
