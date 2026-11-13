@@ -1,7 +1,8 @@
 # jhs512 강의 개선점 정리
 
 책(sbb3, [pahkey/sbb3](https://github.com/pahkey/sbb3))과 jhs512 강의 두 개가 어떻게 다른지,
-그리고 이 프로젝트에서 그 개선점을 언제 적용할지 정리합니다.
+그리고 이 프로젝트에서 그 개선점을 어느 커밋에서 적용했는지 정리합니다.
+책 본편(2장~3장 3-13)까지 구현했고, RESTful URL 리팩터링은 아직 하지 않았습니다.
 
 - 14163 점프투스프링부트 개선 — 참고 저장소 `jhs512/p-14163-2`
 - 14168 JPA, 타임리프 개선(Post/PostComment 게시판) — 참고 저장소 `jhs512/p-14168-2`
@@ -12,9 +13,9 @@
 |---|---|---|---|
 | 버전 | Boot 3.2.1, Java 19, Groovy | Boot 4.1.2, Java 25, Kotlin DSL | jhs512와 같음(001-01) |
 | 설정 파일 | `application.properties` 한 개 | `application.yaml` + `-dev`(H2 파일 DB) + `-test`(H2 메모리 DB), 기본 프로필 dev | 적용(002-01, DB 설정은 003-01) |
-| SQL 로그 | `show_sql` | `format_sql`, `highlight_sql`, `use_sql_comments`, 바인딩 파라미터 TRACE, 트랜잭션 TRACE | 적용(004, 테이블 생성 SQL이 처음 나오는 엔티티 단원) |
+| SQL 로그 | `show_sql` | `format_sql`, `highlight_sql`, `use_sql_comments`, 바인딩 파라미터 TRACE, 트랜잭션 TRACE | 적용(004-03) |
 | H2 | 기본 설정 | `;MODE=MySQL`, DB 파일은 `.gitignore`에 추가 | 적용(003-01) |
-| 템플릿 캐시 | — | dev에서 `thymeleaf.cache: false`, `prefix: file:src/main/resources/templates/` | 적용 |
+| 템플릿 캐시 | — | dev에서 `thymeleaf.cache: false`, `prefix: file:src/main/resources/templates/` | 적용(002-01, prefix는 006-01) |
 
 ## 2. 패키지 구조
 
@@ -27,53 +28,93 @@
 
 | 항목 | 책 | jhs512 | 이 프로젝트 |
 |---|---|---|---|
-| 공통 필드 | 엔티티마다 `id`, `createDate` 선언 | `BaseEntity`(`@MappedSuperclass`, `@CreatedDate`/`@LastModifiedDate`, id 기반 `equals`/`hashCode`), `@EnableJpaAuditing` | 적용 |
-| id 타입 | `Integer` | `int` | 적용 |
-| setter | `@Getter @Setter` | `@Getter @NoArgsConstructor`, setter 없음 | 적용 |
-| 변경 방법 | 서비스에서 setter 호출 | 도메인 메서드(`addAnswer`, `modify`, `deleteAnswer` 등) + 변경 감지 | 적용 |
-| 연관관계 | 기본 설정 | `@ManyToOne(LAZY)`, `@OneToMany(cascade = {PERSIST, REMOVE}, orphanRemoval = true)`, 컬렉션은 `new ArrayList<>()`로 초기화 | 적용 |
+| 공통 필드 | 엔티티마다 `id`, `createDate` 선언 | `BaseEntity`(`@MappedSuperclass`, `@CreatedDate`/`@LastModifiedDate`, id 기반 `equals`/`hashCode`), `@EnableJpaAuditing` | 적용(004-01), 수정 여부 `isModified()`(024-05) |
+| id 타입 | `Integer` | `int` | 적용(004-01) |
+| setter | `@Getter @Setter` | `@Getter @NoArgsConstructor`, setter 없음 | 적용(004-01부터 전체) |
+| 변경 방법 | 서비스에서 setter 호출 | 도메인 메서드(`addAnswer`, `modify`, `deleteAnswer` 등) + 변경 감지 | 적용(005-03 modify, 005-04 addAnswer, 024-04 deleteAnswer, 025-01 vote) |
+| 연관관계 | 기본 설정 | `@ManyToOne(LAZY)`, `@OneToMany(cascade = {PERSIST, REMOVE}, orphanRemoval = true)`, 컬렉션은 `new ArrayList<>()`로 초기화 | 적용(004-02) |
 
 ## 4. 계층 구조와 트랜잭션
 
 - **애그리거트 단위 저장소**: jhs512는 자식(Answer/PostComment)에 Repository를 만들지 않고 부모를 통해 다룹니다.
-  이 프로젝트는 처음엔 그렇게 하고, 자식에 Repository·Service가 정말 필요해지는 시점(예: 답변 단독 수정·추천)에 이유를 남기고 추가합니다.
+  이 프로젝트도 답변 생성·삭제는 Question을 통해 하고(005-04, 024-04),
+  답변 id만으로 찾아야 하는 답변 수정 URL이 생긴 024-03에서 AnswerRepository·AnswerService(조회 전용)를 추가했습니다.
 - **`@Transactional` 위치**: 책은 서비스, jhs512는 컨트롤러(조회는 `readOnly = true`)에 붙입니다.
-  여기에 hikari `auto-commit: false`를 함께 씁니다. 이 프로젝트도 컨트롤러 방식을 쓰고, `auto-commit: false`는 컨트롤러에 `@Transactional`을 처음 붙이는 커밋에서 함께 적용합니다.
-- **조회 반환**: 서비스는 `Optional`을 돌려주고, 없으면 컨트롤러에서 예외를 던집니다.
+  여기에 hikari `auto-commit: false`를 함께 씁니다. 이 프로젝트도 컨트롤러 방식을 씁니다(008-02에서 `auto-commit: false`와 함께 적용).
+- **조회 반환**: 서비스는 `Optional`을 돌려주고, 없으면 컨트롤러에서 예외를 던집니다(009-01).
 
 ## 5. 초기 데이터
 
 - 책: 테스트 코드로 데이터를 넣음
 - jhs512: `@Configuration` + `ApplicationRunner`(`InitData`), `@Lazy` 자기 주입으로 `self.work1()`에 트랜잭션 적용, `count() > 0`이면 건너뜀
-- 이 프로젝트: 적용
+- 이 프로젝트: `DevInitData`(dev 프로필)로 적용. 샘플 질문(006-02), 샘플 300개(017-01), 개발용 계정(022-01)
 
 ## 6. 폼과 검증
 
 - 책: 클래스 폼(`QuestionForm`), `@Getter @Setter`
 - jhs512: 컨트롤러 안의 중첩 `record` 폼(`WriteForm`, `ModifyForm`).
   오류 메시지는 `"01-title-제목을 입력해주세요."` 형식이라 정렬할 수 있고, `form_errors` 조각이 정렬·분리한 뒤 해당 필드에 포커스를 줍니다.
-- 이 프로젝트: 적용
+- 이 프로젝트: 적용(015-02 질문, 015-03 답변, 021-01 회원가입, 024 수정 폼)
 
 ## 7. 테스트
 
 - 책: `@SpringBootTest`만 사용
 - jhs512: `@ActiveProfiles("test") @SpringBootTest @Transactional`, 메서드 `t1`, `t2`... + `@DisplayName`.
   `@Transactional`이 없으면 LAZY 로딩 테스트가 실패하는 것도 보여줌
-- 이 프로젝트: 적용하고, jhs512에는 없는 **MockMvc 컨트롤러 테스트**도 추가
+- 이 프로젝트: 적용(005-01부터)하고, jhs512에는 없는 **MockMvc 컨트롤러 테스트**도 추가(002-02부터, 028-02 기준 61개)
 
 ## 8. URL
 
 - 책: `/question/list`, `/question/detail/{id}`, `/answer/create/{id}`...
 - jhs512(14168): `/posts`, `/posts/{id}`, `PUT /posts/{id}/modify`, `DELETE /posts/{postId}/comments/{id}/delete`(hidden method 필터)
-- 이 프로젝트: 1단계는 **책 URL을 그대로** 쓰고, 1단계가 끝나면 RESTful 리팩터링을 별도 단위로 진행
+- 이 프로젝트: 1단계는 **책 URL을 그대로** 사용(완료). RESTful 리팩터링은 아직 하지 않음
+  - 단, 상태를 바꾸는 요청(로그아웃, 삭제, 추천)은 책의 GET 링크 대신 처음부터 CSRF 토큰을 포함한 POST로 만듦
 
 ## 9. 화면
 
 - jhs512: Bootstrap을 cdnjs로 불러옴, Pretendard 폰트, `layout:decorate` + `title-pattern`,
   CSRF 메타 태그 + `global.js`(`<a method="DELETE">` 지원), 정적 파일은 `static/resource/` 아래
-- 이 프로젝트: 화면 단원에서 적용
+- 이 프로젝트: Bootstrap·Pretendard CDN(013-01), `global/layout` + `title-pattern`(014-01), 정적 파일 `static/resource/global/`(012-01)
+  - `global.js`(`<a method="DELETE">`)는 쓰지 않고 POST 폼으로 처리
 
 ## 두 강의 모두 다루지 않은 것
 
 `Rq`, `RsData`, `ServiceException`, `GlobalExceptionHandler`, QueryDSL, DTO 계층, MockMvc 테스트.
-필요해지는 시점에 따로 결정합니다.
+이 중 MockMvc 테스트만 도입했고, 나머지는 쓰지 않았습니다.
+
+## 책보다 나아진 점 (jhs512 강의 밖에서 추가로 바꾼 것)
+
+| 커밋 | 책 | 이 프로젝트 |
+|---|---|---|
+| 017-01 | `createDate` 내림차순 | id 내림차순: 같은 시각에 저장된 글도 순서가 일정하고 PK 인덱스 사용 |
+| 019-01 | 질문마다 답변 SELECT(N+1) | `default_batch_fetch_size: 100`으로 IN 쿼리 한 번 |
+| 021-01 | 중복 가입을 `DataIntegrityViolationException`으로 처리 | 저장 전 `existsBy`로 검사, 필드별 오류. `DelegatingPasswordEncoder`(`{bcrypt}` 접두어) |
+| 022-01 | GET 로그아웃 링크 | CSRF 토큰을 포함한 POST 로그아웃 |
+| 024 | 권한 없음 400, GET 삭제 링크 | 권한 없음 403, POST 삭제 |
+| 027-01 | 기본 `HtmlRenderer`(사용자 HTML이 그대로 출력되어 XSS 가능) | `escapeHtml(true)`, `sanitizeUrls(true)` |
+| 028 | 검색어가 없어도 join 쿼리, 숨김 폼 + JS 페이징 | 검색어 없으면 `findAll`, GET 폼과 URL 파라미터로 JS 없이 페이징 |
+
+## 진행하면서 알게 된 것
+
+- **Boot 4 / Hibernate 7**
+  - dialect를 지정하지 않아도 H2Dialect를 자동 선택(003-01)
+  - H2 2.x에서 `columnDefinition = "TEXT"`는 `VARCHAR(1000000000)`으로 생성됨(004-01)
+  - `@AutoConfigureMockMvc` 패키지가 `org.springframework.boot.webmvc.test.autoconfigure`로 바뀜(002-02)
+- **Spring Security 7**
+  - `AntPathRequestMatcher`가 없어져 `anyRequest()`와 경로 문자열 사용(020-01)
+  - test 프로필은 H2 콘솔이 꺼져 있어 `PathRequest.toH2Console()`이 빈을 못 찾음 → `"/h2-console/**"`(020-01)
+  - 로그인 화면 리다이렉트가 상대 경로 `/user/login`(023-01)
+- **Thymeleaf**
+  - 템플릿에서 `${@빈.메서드()}` 호출이 "Instantiation of new objects … is forbidden"으로 막혀 `@ControllerAdvice` 모델 속성으로 전달(027-01)
+  - record 폼도 `th:object`/`th:field`로 바인딩됨(015-02)
+  - 오류 프래그먼트는 입력 필드보다 먼저 렌더링되므로 포커스 스크립트는 `DOMContentLoaded` 뒤에 실행(015-02)
+- **JPA**
+  - 답변 목록이 화면에서 LAZY 조회되는 건 컨트롤러 트랜잭션이 아니라 기본으로 켜진 `open-in-view` 덕분(011-01)
+  - cascade로 저장되는 답변은 커밋 시점에 INSERT되므로, 앵커용 id가 필요하면 flush(026-01)
+  - Auditing은 저장 시 `createDate`와 `modifyDate`를 같은 값으로 채움 → 수정 여부는 두 값 비교(024-05)
+
+## 남은 정리거리
+
+- `spring.jpa.open-in-view` 끄기(지금은 기본값 켜짐, 시작 시 경고)
+- `createDate`에 `@Column(updatable = false)`(수정 시 UPDATE 문에 작성일이 포함됨)
+- RESTful URL 리팩터링
