@@ -144,3 +144,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: 상세 화면의 답변 등록 폼과 POST /answer/create/{id} 처리 추가
 - 이유: 사용자가 질문에 답변을 달 수 있게
 - 결과: 테스트 통과, 브라우저에서 답변 등록 후 상세 화면에 표시 확인
+
+### 012-01 웹 페이지 디자인(책 2-13), 정적 파일 style.css
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/012-01)
+- 작업: 정적 CSS 파일을 추가하고 질문 상세 화면에 적용
+- 이유: 답변 입력창을 화면 너비에 맞추고 버튼 간격 조정
+- 결과: 브라우저에서 style.css 200 응답, textarea 전체 너비·버튼 margin 10px 적용 확인
