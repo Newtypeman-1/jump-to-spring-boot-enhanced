@@ -90,3 +90,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: Answer 생성자, Question.addAnswer, 답변 저장·조회·LAZY 로딩 테스트 추가
 - 이유: AnswerRepository 없이 질문을 통해 답변을 다루는 구조 확인
 - 결과: 테스트 11개 통과, cascade로 답변 INSERT와 지연 조회 SELECT 확인
+
+### 006-01 질문 목록(책 2-07), QuestionController와 list 템플릿
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/006-01)
+- 작업: GET /question/list 컨트롤러, 타임리프 목록 템플릿, MockMvc 테스트 추가
+- 이유: 저장된 질문을 화면에 표 형태로 보여주기
+- 결과: 테스트 통과, 브라우저에서 /question/list 표 헤더 렌더링 확인

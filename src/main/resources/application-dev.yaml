@@ -12,3 +12,4 @@ spring:
       ddl-auto: update
   thymeleaf:
     cache: false
+    prefix: file:src/main/resources/templates/
