@@ -30,4 +30,12 @@ public class Answer extends BaseEntity {
         this.author = author;
         this.content = content;
     }
+
+    public void modify(String content) {
+        this.content = content;
+    }
+
+    public boolean isAuthoredBy(String username) {
+        return author != null && author.getUsername().equals(username);
+    }
 }
