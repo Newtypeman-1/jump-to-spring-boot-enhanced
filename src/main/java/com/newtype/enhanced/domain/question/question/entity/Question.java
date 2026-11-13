@@ -50,4 +50,8 @@ public class Question extends BaseEntity {
         answerList.add(answer);
         return answer;
     }
+
+    public boolean isAuthoredBy(String username) {
+        return author != null && author.getUsername().equals(username);
+    }
 }

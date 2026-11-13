@@ -224,4 +224,42 @@ class QuestionControllerTest {
                 .andExpect(content().string(containsString("<span>user1</span>")))
                 .andExpect(content().string(containsString("로그인 후 답변을 작성할 수 있습니다.")));
     }
+
+    @Test
+    @DisplayName("GET /question/modify/{id}: 작성자에게 기존 값이 채워진 수정 폼을 보여준다")
+    void t17() throws Exception {
+        Question question = questionRepository.save(new Question(author, "수정 전 제목", "수정 전 내용"));
+
+        mvc.perform(get("/question/modify/" + question.getId()).with(user("user1")))
+                .andExpect(status().isOk())
+                .andExpect(view().name("question/question/modify"))
+                .andExpect(content().string(containsString("value=\"수정 전 제목\"")));
+    }
+
+    @Test
+    @DisplayName("POST /question/modify/{id}: 작성자는 수정할 수 있다")
+    void t18() throws Exception {
+        Question question = questionRepository.save(new Question(author, "수정 전 제목", "수정 전 내용"));
+
+        mvc.perform(post("/question/modify/" + question.getId()).with(csrf()).with(user("user1"))
+                        .param("subject", "수정 후 제목")
+                        .param("content", "수정 후 내용"))
+                .andExpect(redirectedUrl("/question/detail/" + question.getId()));
+
+        assertThat(question.getSubject()).isEqualTo("수정 후 제목");
+    }
+
+    @Test
+    @DisplayName("POST /question/modify/{id}: 작성자가 아니면 403")
+    void t19() throws Exception {
+        Question question = questionRepository.save(new Question(author, "수정 전 제목", "수정 전 내용"));
+        userService.create("user2", "1234", "user2@test.com");
+
+        mvc.perform(post("/question/modify/" + question.getId()).with(csrf()).with(user("user2"))
+                        .param("subject", "남의 글 수정")
+                        .param("content", "남의 글 수정"))
+                .andExpect(status().isForbidden());
+
+        assertThat(question.getSubject()).isEqualTo("수정 전 제목");
+    }
 }
