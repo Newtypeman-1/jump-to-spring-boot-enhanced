@@ -132,3 +132,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: QuestionController에 공통 URL 프리픽스 /question 적용
 - 이유: 메서드마다 반복되는 /question을 클래스에서 한 번만 선언
 - 결과: URL은 그대로이고 기존 MockMvc 테스트 모두 통과
+
+### 011-01 답변 기능(책 2-12), 상세 화면에 답변 목록 표시
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/011-01)
+- 작업: 질문 상세 화면에 답변 개수와 답변 목록 출력
+- 이유: 질문에 달린 답변을 상세 화면에서 확인
+- 결과: 테스트 통과, 상세 화면에 "N개의 답변이 있습니다."와 답변 내용 표시

@@ -58,4 +58,18 @@ class QuestionControllerTest {
         mvc.perform(get("/question/detail/999999"))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    @DisplayName("GET /question/detail/{id}: 답변 개수와 답변 목록을 보여준다")
+    void t4() throws Exception {
+        Question question = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+        question.addAnswer("첫 번째 답변");
+        question.addAnswer("두 번째 답변");
+        questionRepository.flush();
+
+        mvc.perform(get("/question/detail/" + question.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("2개의 답변이 있습니다.")))
+                .andExpect(content().string(containsString("두 번째 답변")));
+    }
 }
