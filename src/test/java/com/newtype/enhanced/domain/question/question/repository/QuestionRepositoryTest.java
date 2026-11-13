@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -84,5 +85,30 @@ class QuestionRepositoryTest {
 
         assertThat(questions).hasSize(1);
         assertThat(questions.get(0).getSubject()).isEqualTo("sbb가 무엇인가요?");
+    }
+
+    @Test
+    @DisplayName("질문 수정: modify 후 flush하면 UPDATE되고 수정일이 바뀐다")
+    void t7() {
+        Question question = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+        LocalDateTime oldModifyDate = question.getModifyDate();
+
+        question.modify("수정된 제목", "수정된 내용");
+        questionRepository.flush();
+
+        Question modified = questionRepository.findById(question.getId()).get();
+        assertThat(modified.getSubject()).isEqualTo("수정된 제목");
+        assertThat(modified.getModifyDate()).isAfter(oldModifyDate);
+    }
+
+    @Test
+    @DisplayName("질문 삭제: delete")
+    void t8() {
+        Question question = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+        assertThat(questionRepository.count()).isEqualTo(1);
+
+        questionRepository.delete(question);
+
+        assertThat(questionRepository.count()).isZero();
     }
 }

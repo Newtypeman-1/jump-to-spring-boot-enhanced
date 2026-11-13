@@ -78,3 +78,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: 제목, 제목+내용, 제목 일부로 질문을 찾는 쿼리 메서드와 테스트 추가
 - 이유: 메서드 이름만으로 JPA가 쿼리를 만드는 방식 익히기
 - 결과: 테스트 6개 통과, 로그에서 where subject=? / like ? SQL 확인
+
+### 005-03 리포지터리(책 2-05), 질문 수정·삭제
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/005-03)
+- 작업: Question.modify 도메인 메서드와 수정·삭제 테스트 추가
+- 이유: setter 없이 변경 감지로 수정하고, 수정일 자동 갱신 확인
+- 결과: 테스트 8개 통과, flush 시 UPDATE 실행과 수정일 갱신 확인
