@@ -132,4 +132,16 @@ class QuestionControllerTest {
                 .andExpect(content().string(containsString("페이징 질문 05")))
                 .andExpect(content().string(not(containsString("페이징 질문 06"))));
     }
+
+    @Test
+    @DisplayName("GET /question/list: 페이지 이동 링크를 보여준다")
+    void t10() throws Exception {
+        for (int i = 1; i <= 15; i++) {
+            questionRepository.save(new Question("페이징 질문 %02d".formatted(i), "내용"));
+        }
+
+        mvc.perform(get("/question/list"))
+                .andExpect(content().string(containsString("pagination")))
+                .andExpect(content().string(containsString("/question/list?page=1")));
+    }
 }
