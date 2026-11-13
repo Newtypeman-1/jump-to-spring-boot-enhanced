@@ -30,4 +30,9 @@ public class UserService {
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+
+    public SiteUser getByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalStateException("로그인한 사용자를 찾을 수 없습니다: " + username));
+    }
 }

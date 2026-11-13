@@ -3,6 +3,9 @@ package com.newtype.enhanced.domain.question.question.repository;
 import com.newtype.enhanced.domain.question.answer.entity.Answer;
 import com.newtype.enhanced.domain.question.question.entity.Question;
 import jakarta.persistence.EntityManager;
+import com.newtype.enhanced.domain.user.user.entity.SiteUser;
+import com.newtype.enhanced.domain.user.user.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +27,22 @@ class QuestionRepositoryTest {
     private QuestionRepository questionRepository;
 
     @Autowired
+    private UserService userService;
+
+    private SiteUser author;
+
+    @BeforeEach
+    void setUp() {
+        author = userService.create("user1", "1234", "user1@test.com");
+    }
+
+    @Autowired
     private EntityManager em;
 
     @Test
     @DisplayName("질문 저장: id가 발급되고 작성일·수정일이 자동으로 채워진다")
     void t1() {
-        Question question = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+        Question question = questionRepository.save(new Question(author, "sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
 
         assertThat(question.getId()).isPositive();
         assertThat(question.getCreateDate()).isNotNull();
@@ -39,8 +52,8 @@ class QuestionRepositoryTest {
     @Test
     @DisplayName("질문 전체 조회: findAll")
     void t2() {
-        questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
-        questionRepository.save(new Question("스프링부트 모델 질문입니다.", "id는 자동으로 생성되나요?"));
+        questionRepository.save(new Question(author, "sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+        questionRepository.save(new Question(author, "스프링부트 모델 질문입니다.", "id는 자동으로 생성되나요?"));
 
         List<Question> questions = questionRepository.findAll();
 
@@ -51,7 +64,7 @@ class QuestionRepositoryTest {
     @Test
     @DisplayName("질문 단건 조회: findById")
     void t3() {
-        Question saved = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+        Question saved = questionRepository.save(new Question(author, "sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
 
         Question question = questionRepository.findById(saved.getId()).get();
 
@@ -61,7 +74,7 @@ class QuestionRepositoryTest {
     @Test
     @DisplayName("제목으로 조회: findBySubject")
     void t4() {
-        questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+        questionRepository.save(new Question(author, "sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
 
         Question question = questionRepository.findBySubject("sbb가 무엇인가요?").get();
 
@@ -71,7 +84,7 @@ class QuestionRepositoryTest {
     @Test
     @DisplayName("제목과 내용으로 조회: findBySubjectAndContent")
     void t5() {
-        Question saved = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+        Question saved = questionRepository.save(new Question(author, "sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
 
         Question question = questionRepository
                 .findBySubjectAndContent("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다.")
@@ -83,8 +96,8 @@ class QuestionRepositoryTest {
     @Test
     @DisplayName("제목 일부로 조회: findBySubjectLike")
     void t6() {
-        questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
-        questionRepository.save(new Question("스프링부트 모델 질문입니다.", "id는 자동으로 생성되나요?"));
+        questionRepository.save(new Question(author, "sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+        questionRepository.save(new Question(author, "스프링부트 모델 질문입니다.", "id는 자동으로 생성되나요?"));
 
         List<Question> questions = questionRepository.findBySubjectLike("sbb%");
 
@@ -95,7 +108,7 @@ class QuestionRepositoryTest {
     @Test
     @DisplayName("질문 수정: modify 후 flush하면 UPDATE되고 수정일이 바뀐다")
     void t7() {
-        Question question = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+        Question question = questionRepository.save(new Question(author, "sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
         LocalDateTime oldModifyDate = question.getModifyDate();
 
         question.modify("수정된 제목", "수정된 내용");
@@ -109,7 +122,7 @@ class QuestionRepositoryTest {
     @Test
     @DisplayName("질문 삭제: delete")
     void t8() {
-        Question question = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+        Question question = questionRepository.save(new Question(author, "sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
         assertThat(questionRepository.count()).isEqualTo(1);
 
         questionRepository.delete(question);
@@ -120,9 +133,9 @@ class QuestionRepositoryTest {
     @Test
     @DisplayName("답변 저장: addAnswer 후 flush하면 cascade PERSIST로 답변도 저장된다")
     void t9() {
-        Question question = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+        Question question = questionRepository.save(new Question(author, "sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
 
-        Answer answer = question.addAnswer("네 자동으로 생성됩니다.");
+        Answer answer = question.addAnswer(author, "네 자동으로 생성됩니다.");
         questionRepository.flush();
 
         assertThat(answer.getId()).isPositive();
@@ -132,8 +145,8 @@ class QuestionRepositoryTest {
     @Test
     @DisplayName("답변으로 질문 조회: answer.getQuestion")
     void t10() {
-        Question question = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
-        Answer saved = question.addAnswer("네 자동으로 생성됩니다.");
+        Question question = questionRepository.save(new Question(author, "sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+        Answer saved = question.addAnswer(author, "네 자동으로 생성됩니다.");
         questionRepository.flush();
         em.clear();
 
@@ -145,8 +158,8 @@ class QuestionRepositoryTest {
     @Test
     @DisplayName("질문으로 답변 목록 조회: LAZY 로딩은 트랜잭션 안에서 동작한다")
     void t11() {
-        Question saved = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
-        saved.addAnswer("네 자동으로 생성됩니다.");
+        Question saved = questionRepository.save(new Question(author, "sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+        saved.addAnswer(author, "네 자동으로 생성됩니다.");
         questionRepository.flush();
         em.clear();
 

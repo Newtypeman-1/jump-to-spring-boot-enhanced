@@ -3,12 +3,17 @@ package com.newtype.enhanced.domain.question.question.controller;
 import com.newtype.enhanced.domain.question.answer.controller.AnswerController;
 import com.newtype.enhanced.domain.question.question.entity.Question;
 import com.newtype.enhanced.domain.question.question.service.QuestionService;
+import com.newtype.enhanced.domain.user.user.entity.SiteUser;
+import com.newtype.enhanced.domain.user.user.service.UserService;
 import com.newtype.enhanced.global.exception.DataNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+
+import java.security.Principal;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -27,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class QuestionController {
 
     private final QuestionService questionService;
+    private final UserService userService;
 
     @GetMapping("/list")
     @Transactional(readOnly = true)
@@ -59,18 +65,25 @@ public class QuestionController {
     }
 
     @GetMapping("/create")
+    @PreAuthorize("isAuthenticated()")
     public String showCreate(@ModelAttribute("form") CreateForm form) {
         return "question/question/create";
     }
 
     @PostMapping("/create")
+    @PreAuthorize("isAuthenticated()")
     @Transactional
-    public String create(@Valid @ModelAttribute("form") CreateForm form, BindingResult bindingResult) {
+    public String create(
+            @Valid @ModelAttribute("form") CreateForm form,
+            BindingResult bindingResult,
+            Principal principal
+    ) {
         if (bindingResult.hasErrors()) {
             return "question/question/create";
         }
 
-        questionService.create(form.subject(), form.content());
+        SiteUser author = userService.getByUsername(principal.getName());
+        questionService.create(author, form.subject(), form.content());
         return "redirect:/question/list";
     }
 }

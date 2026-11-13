@@ -2,10 +2,15 @@ package com.newtype.enhanced.domain.question.answer.controller;
 
 import com.newtype.enhanced.domain.question.question.entity.Question;
 import com.newtype.enhanced.domain.question.question.service.QuestionService;
+import com.newtype.enhanced.domain.user.user.entity.SiteUser;
+import com.newtype.enhanced.domain.user.user.service.UserService;
 import com.newtype.enhanced.global.exception.DataNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+
+import java.security.Principal;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -21,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AnswerController {
 
     private final QuestionService questionService;
+    private final UserService userService;
 
     public record CreateForm(
             @NotBlank(message = "01-content-내용은 필수항목입니다.")
@@ -29,12 +35,14 @@ public class AnswerController {
     }
 
     @PostMapping("/create/{id}")
+    @PreAuthorize("isAuthenticated()")
     @Transactional
     public String create(
             @PathVariable int id,
             @Valid @ModelAttribute("form") CreateForm form,
             BindingResult bindingResult,
-            Model model
+            Model model,
+            Principal principal
     ) {
         Question question = questionService.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("question not found"));
@@ -44,7 +52,8 @@ public class AnswerController {
             return "question/question/detail";
         }
 
-        question.addAnswer(form.content());
+        SiteUser author = userService.getByUsername(principal.getName());
+        question.addAnswer(author, form.content());
         return "redirect:/question/detail/%d".formatted(id);
     }
 }

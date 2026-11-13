@@ -2,6 +2,7 @@ package com.newtype.enhanced.domain.question.question.service;
 
 import com.newtype.enhanced.domain.question.question.entity.Question;
 import com.newtype.enhanced.domain.question.question.repository.QuestionRepository;
+import com.newtype.enhanced.domain.user.user.entity.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +25,7 @@ public class QuestionService {
         return questionRepository.findById(id);
     }
 
-    public Question create(String subject, String content) {
-        return questionRepository.save(new Question(subject, content));
+    public Question create(SiteUser author, String subject, String content) {
+        return questionRepository.save(new Question(author, subject, content));
     }
 }
