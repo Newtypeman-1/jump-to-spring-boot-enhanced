@@ -209,4 +209,19 @@ class QuestionControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/user/login"));
     }
+
+    @Test
+    @DisplayName("목록·상세에 글쓴이를 보여주고, 비로그인 상세 화면은 답변 입력창을 막는다")
+    void t16() throws Exception {
+        Question question = questionRepository.save(new Question(author, "글쓴이 질문", "내용"));
+        question.addAnswer(author, "글쓴이 답변");
+        questionRepository.flush();
+
+        mvc.perform(get("/question/list"))
+                .andExpect(content().string(containsString("<span>user1</span>")));
+
+        mvc.perform(get("/question/detail/" + question.getId()))
+                .andExpect(content().string(containsString("<span>user1</span>")))
+                .andExpect(content().string(containsString("로그인 후 답변을 작성할 수 있습니다.")));
+    }
 }
