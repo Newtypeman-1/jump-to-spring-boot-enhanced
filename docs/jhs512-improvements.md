@@ -11,9 +11,9 @@
 | 항목 | 책 | jhs512 | 이 프로젝트 |
 |---|---|---|---|
 | 버전 | Boot 3.2.1, Java 19, Groovy | Boot 4.1.2, Java 25, Kotlin DSL | jhs512와 같음(001-01) |
-| 설정 파일 | `application.properties` 한 개 | `application.yaml` + `-dev`(H2 파일 DB) + `-test`(H2 메모리 DB), 기본 프로필 dev | 적용 |
-| SQL 로그 | `show_sql` | `format_sql`, `highlight_sql`, `use_sql_comments`, 바인딩 파라미터 TRACE, 트랜잭션 TRACE | 적용 |
-| H2 | 기본 설정 | `;MODE=MySQL`, DB 파일은 `.gitignore`에 추가 | 적용 |
+| 설정 파일 | `application.properties` 한 개 | `application.yaml` + `-dev`(H2 파일 DB) + `-test`(H2 메모리 DB), 기본 프로필 dev | 적용(002-01, DB 설정은 003-01) |
+| SQL 로그 | `show_sql` | `format_sql`, `highlight_sql`, `use_sql_comments`, 바인딩 파라미터 TRACE, 트랜잭션 TRACE | 적용(004, 테이블 생성 SQL이 처음 나오는 엔티티 단원) |
+| H2 | 기본 설정 | `;MODE=MySQL`, DB 파일은 `.gitignore`에 추가 | 적용(003-01) |
 | 템플릿 캐시 | — | dev에서 `thymeleaf.cache: false`, `prefix: file:src/main/resources/templates/` | 적용 |
 
 ## 2. 패키지 구조
@@ -38,7 +38,7 @@
 - **애그리거트 단위 저장소**: jhs512는 자식(Answer/PostComment)에 Repository를 만들지 않고 부모를 통해 다룹니다.
   이 프로젝트는 처음엔 그렇게 하고, 자식에 Repository·Service가 정말 필요해지는 시점(예: 답변 단독 수정·추천)에 이유를 남기고 추가합니다.
 - **`@Transactional` 위치**: 책은 서비스, jhs512는 컨트롤러(조회는 `readOnly = true`)에 붙입니다.
-  여기에 hikari `auto-commit: false`를 함께 씁니다. 이 프로젝트도 컨트롤러 방식을 씁니다.
+  여기에 hikari `auto-commit: false`를 함께 씁니다. 이 프로젝트도 컨트롤러 방식을 쓰고, `auto-commit: false`는 컨트롤러에 `@Transactional`을 처음 붙이는 커밋에서 함께 적용합니다.
 - **조회 반환**: 서비스는 `Optional`을 돌려주고, 없으면 컨트롤러에서 예외를 던집니다.
 
 ## 5. 초기 데이터

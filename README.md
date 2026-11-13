@@ -42,3 +42,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: GET /hello 컨트롤러와 MockMvc 테스트 추가
 - 이유: URL 요청이 컨트롤러로 연결되는 흐름 확인
 - 결과: 테스트 통과, 브라우저에서 Hello World 확인
+
+### 003-01 H2 DB 연결(책 2-03), dev 파일 DB / test 메모리 DB
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/003-01)
+- 작업: dev는 H2 파일 DB(./db_dev)와 h2-console, test는 H2 메모리 DB 설정
+- 이유: 테스트가 개발 데이터를 건드리지 않고 매번 빈 DB로 시작
+- 결과: 테스트 통과(메모리 DB), db_dev.mv.db 생성, h2-console 접속 확인

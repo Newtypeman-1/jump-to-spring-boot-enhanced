@@ -1,1 +1,9 @@
-# 테스트 환경 설정 (DB 설정은 003에서 추가)
+# 테스트 환경: 실행할 때마다 새로 만드는 H2 메모리 DB
+spring:
+  datasource:
+    url: jdbc:h2:mem:db_test;MODE=MySQL
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
