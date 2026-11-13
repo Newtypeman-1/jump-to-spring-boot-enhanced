@@ -28,4 +28,8 @@ public class QuestionService {
     public Question create(SiteUser author, String subject, String content) {
         return questionRepository.save(new Question(author, subject, content));
     }
+
+    public void delete(Question question) {
+        questionRepository.delete(question);
+    }
 }

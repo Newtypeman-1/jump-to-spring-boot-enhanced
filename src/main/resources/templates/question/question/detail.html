@@ -25,6 +25,10 @@
                 <div class="my-3" sec:authorize="isAuthenticated()"
                      th:if="${question.isAuthoredBy(#authentication.name)}">
                     <a th:href="@{|/question/modify/${question.id}|}" class="btn btn-sm btn-outline-secondary">수정</a>
+                    <form th:action="@{|/question/delete/${question.id}|}" method="post" class="d-inline"
+                          onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
+                    </form>
                 </div>
             </div>
         </div>

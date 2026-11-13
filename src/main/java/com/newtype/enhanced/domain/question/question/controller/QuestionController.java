@@ -129,6 +129,15 @@ public class QuestionController {
         return "redirect:/question/detail/%d".formatted(id);
     }
 
+    @PostMapping("/delete/{id}")
+    @PreAuthorize("isAuthenticated()")
+    @Transactional
+    public String delete(@PathVariable int id, Principal principal) {
+        Question question = findQuestionOwnedBy(id, principal);
+        questionService.delete(question);
+        return "redirect:/";
+    }
+
     private Question findQuestionOwnedBy(int id, Principal principal) {
         Question question = questionService.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("question not found"));

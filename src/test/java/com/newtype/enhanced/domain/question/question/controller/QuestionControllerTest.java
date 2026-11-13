@@ -262,4 +262,29 @@ class QuestionControllerTest {
 
         assertThat(question.getSubject()).isEqualTo("수정 전 제목");
     }
+
+    @Test
+    @DisplayName("POST /question/delete/{id}: 작성자는 삭제할 수 있고 답변도 함께 삭제된다")
+    void t20() throws Exception {
+        Question question = questionRepository.save(new Question(author, "삭제할 질문", "내용"));
+        question.addAnswer(author, "함께 삭제될 답변");
+        questionRepository.flush();
+
+        mvc.perform(post("/question/delete/" + question.getId()).with(csrf()).with(user("user1")))
+                .andExpect(redirectedUrl("/"));
+
+        assertThat(questionRepository.findById(question.getId())).isEmpty();
+    }
+
+    @Test
+    @DisplayName("POST /question/delete/{id}: 작성자가 아니면 403")
+    void t21() throws Exception {
+        Question question = questionRepository.save(new Question(author, "삭제할 질문", "내용"));
+        userService.create("user2", "1234", "user2@test.com");
+
+        mvc.perform(post("/question/delete/" + question.getId()).with(csrf()).with(user("user2")))
+                .andExpect(status().isForbidden());
+
+        assertThat(questionRepository.findById(question.getId())).isPresent();
+    }
 }
