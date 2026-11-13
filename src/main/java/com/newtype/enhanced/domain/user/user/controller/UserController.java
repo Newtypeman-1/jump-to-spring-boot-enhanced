@@ -35,6 +35,11 @@ public class UserController {
     ) {
     }
 
+    @GetMapping("/login")
+    public String showLogin() {
+        return "user/user/login";
+    }
+
     @GetMapping("/signup")
     public String showSignup(@ModelAttribute("form") SignupForm form) {
         return "user/user/signup";

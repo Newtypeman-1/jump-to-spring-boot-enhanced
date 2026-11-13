@@ -2,6 +2,7 @@ package com.newtype.enhanced.global.initData;
 
 import com.newtype.enhanced.domain.question.question.entity.Question;
 import com.newtype.enhanced.domain.question.question.repository.QuestionRepository;
+import com.newtype.enhanced.domain.user.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
@@ -21,13 +22,25 @@ public class DevInitData {
     private DevInitData self;
 
     private final QuestionRepository questionRepository;
+    private final UserService userService;
 
     @Bean
     public ApplicationRunner devInitDataApplicationRunner() {
         return args -> {
+            self.work0();
             self.work1();
             self.work2();
         };
+    }
+
+    // 개발용 계정: admin, user1, user2 (비밀번호는 모두 1234)
+    @Transactional
+    public void work0() {
+        if (userService.existsByUsername("admin")) return;
+
+        userService.create("admin", "1234", "admin@test.com");
+        userService.create("user1", "1234", "user1@test.com");
+        userService.create("user2", "1234", "user2@test.com");
     }
 
     @Transactional

@@ -1,4 +1,5 @@
-<nav th:fragment="navbarFragment" class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+<nav th:fragment="navbarFragment" class="navbar navbar-expand-lg navbar-light bg-light border-bottom"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <div class="container-fluid">
         <a class="navbar-brand" th:href="@{/}">SBB</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -7,13 +8,20 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" th:href="@{/user/login}">로그인</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <!-- 로그아웃은 상태를 바꾸는 요청이므로 CSRF 토큰과 함께 POST로 보냄 -->
+                    <form th:action="@{/user/logout}" method="post" class="d-inline">
+                        <button type="submit" class="nav-link btn btn-link">로그아웃</button>
+                    </form>
+                </li>
+                <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" th:href="@{/user/signup}">회원가입</a>
                 </li>
             </ul>
+            <span class="navbar-text" sec:authorize="isAuthenticated()" sec:authentication="name"></span>
         </div>
     </div>
 </nav>

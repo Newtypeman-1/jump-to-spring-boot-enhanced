@@ -15,7 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -90,5 +95,54 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeHasFieldErrors("form", "username", "email"))
                 .andExpect(content().string(containsString("이미 사용 중인 사용자ID입니다.")));
+    }
+
+    @Test
+    @DisplayName("POST /user/login: 올바른 비밀번호면 로그인되고 / 로 이동")
+    void t5() throws Exception {
+        userService.create("user1", "1234", "user1@test.com");
+
+        mvc.perform(formLogin("/user/login").user("user1").password("1234"))
+                .andExpect(authenticated().withUsername("user1").withRoles("USER"))
+                .andExpect(redirectedUrl("/"));
+    }
+
+    @Test
+    @DisplayName("POST /user/login: 비밀번호가 틀리면 로그인 화면으로 돌아가 오류 표시")
+    void t6() throws Exception {
+        userService.create("user1", "1234", "user1@test.com");
+
+        mvc.perform(formLogin("/user/login").user("user1").password("wrong"))
+                .andExpect(unauthenticated())
+                .andExpect(redirectedUrl("/user/login?error"));
+    }
+
+    @Test
+    @DisplayName("admin 계정은 ADMIN 권한")
+    void t7() throws Exception {
+        userService.create("admin", "1234", "admin@test.com");
+
+        mvc.perform(formLogin("/user/login").user("admin").password("1234"))
+                .andExpect(authenticated().withRoles("ADMIN"));
+    }
+
+    @Test
+    @DisplayName("POST /user/logout: 로그아웃 후 / 로 이동")
+    void t8() throws Exception {
+        mvc.perform(logout("/user/logout"))
+                .andExpect(unauthenticated())
+                .andExpect(redirectedUrl("/"));
+    }
+
+    @Test
+    @DisplayName("내비게이션 바: 로그인 상태면 사용자ID와 로그아웃, 아니면 로그인·회원가입")
+    void t9() throws Exception {
+        mvc.perform(get("/question/list").with(user("user1")))
+                .andExpect(content().string(containsString("로그아웃")))
+                .andExpect(content().string(org.hamcrest.Matchers.not(containsString("회원가입"))));
+
+        mvc.perform(get("/question/list"))
+                .andExpect(content().string(containsString("회원가입")))
+                .andExpect(content().string(org.hamcrest.Matchers.not(containsString("로그아웃"))));
     }
 }

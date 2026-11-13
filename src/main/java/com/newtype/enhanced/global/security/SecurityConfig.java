@@ -21,7 +21,14 @@ public class SecurityConfig {
                         .ignoringRequestMatchers("/h2-console/**"))
                 // H2 콘솔은 frame으로 구성되어 같은 출처의 frame 허용
                 .headers(headers -> headers
-                        .frameOptions(frameOptions -> frameOptions.sameOrigin()));
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin()))
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/user/login")
+                        .defaultSuccessUrl("/"))
+                .logout(logout -> logout
+                        .logoutUrl("/user/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true));
         return http.build();
     }
 
