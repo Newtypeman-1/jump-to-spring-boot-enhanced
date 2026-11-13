@@ -156,4 +156,17 @@ class QuestionControllerTest {
                 .andExpect(content().string(containsString("<td>5</td>")))
                 .andExpect(content().string(not(containsString("<td>6</td>"))));
     }
+
+    @Test
+    @DisplayName("GET /question/list: 답변이 있으면 제목 옆에 답변 개수를 보여준다")
+    void t12() throws Exception {
+        Question question = questionRepository.save(new Question("답변 개수 질문", "내용"));
+        question.addAnswer("답변 1");
+        question.addAnswer("답변 2");
+        question.addAnswer("답변 3");
+        questionRepository.flush();
+
+        mvc.perform(get("/question/list"))
+                .andExpect(content().string(containsString("text-danger small ms-2\">3</span>")));
+    }
 }
