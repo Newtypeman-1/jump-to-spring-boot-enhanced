@@ -19,11 +19,26 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 
 ## 작업내역
 
-### 001 프로젝트 시작
+### 001-01 프로젝트 생성(책 1-04), Initializr 결과 커밋
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/001-01)
+- 작업: Initializr 결과 커밋, README 뼈대 추가
+- 이유: 이후 변경을 비교할 출발점 고정
+- 결과: `./gradlew test` 통과(contextLoads)
 
-- 001-01 프로젝트 생성(책 1-04), Initializr 결과 커밋
-- 001-02 개선 계획 문서, jhs512 강의 개선점 정리
+### 001-02 개선 계획 문서, jhs512 강의 개선점 정리
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/001-02)
+- 작업: 책과 jhs512 강의 차이, 적용 시점 정리
+- 이유: 단계마다 무엇을 바꿀지 기준 마련
+- 결과: docs/jhs512-improvements.md 추가
 
-### 002 스프링 부트 기본 구조
+### 002-01 프로젝트 구조(책 2-01), dev/test 프로필 설정 분리
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/002-01)
+- 작업: application.yaml을 공통/dev/test로 분리
+- 이유: 이후 DB·로그 설정을 환경별로 넣을 자리 마련
+- 결과: 테스트 로그에서 test 프로필 활성 확인
 
-- 002-01 프로젝트 구조(책 2-01), dev/test 프로필 설정 분리
+### 002-02 간단한 웹 프로그램(책 2-02), HelloController
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/002-02)
+- 작업: GET /hello 컨트롤러와 MockMvc 테스트 추가
+- 이유: URL 요청이 컨트롤러로 연결되는 흐름 확인
+- 결과: 테스트 통과, 브라우저에서 Hello World 확인
