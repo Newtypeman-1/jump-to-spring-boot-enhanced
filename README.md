@@ -156,3 +156,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: Bootstrap 5와 Pretendard 폰트를 CDN으로 불러와 목록·상세 화면 디자인
 - 이유: 표·카드·버튼 등 기본 UI를 직접 CSS 작성 없이 구성
 - 결과: 브라우저에서 목록 표(번호·제목·작성일시)와 상세 카드·답변 폼 확인
+
+### 014-01 표준 HTML 구조(책 2-15), 타임리프 레이아웃 global/layout
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/014-01)
+- 작업: thymeleaf-layout-dialect로 공통 레이아웃을 만들고 목록·상세 템플릿이 상속
+- 이유: head(CSS·JS)와 기본 HTML 구조를 한 곳에서 관리
+- 결과: 브라우저에서 레이아웃 적용, 탭 제목 "sbb가 무엇인가요? - SBB" 확인
