@@ -12,6 +12,8 @@
     <link rel="stylesheet" th:href="@{/resource/global/style.css}">
 </head>
 <body>
+<!-- 내비게이션 바 -->
+<nav th:replace="~{global/fragments/navbar :: navbarFragment}"></nav>
 <!-- 각 페이지 내용 -->
 <th:block layout:fragment="content"></th:block>
 

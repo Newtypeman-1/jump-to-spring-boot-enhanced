@@ -111,4 +111,11 @@ class QuestionControllerTest {
 
         assertThat(questionRepository.count()).isEqualTo(count);
     }
+
+    @Test
+    @DisplayName("공통 레이아웃: 모든 화면에 내비게이션 바(SBB 로고)가 나온다")
+    void t8() throws Exception {
+        mvc.perform(get("/question/list"))
+                .andExpect(content().string(containsString("navbar-brand")));
+    }
 }
