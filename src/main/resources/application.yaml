@@ -1,0 +1,3 @@
+spring:
+  application:
+    name: jump-to-spring-boot-enhanced
