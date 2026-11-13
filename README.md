@@ -108,3 +108,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: GET / 요청을 /question/list로 리다이렉트하는 MainController 추가
 - 이유: 사이트 첫 화면을 질문 목록으로
 - 결과: 테스트 통과, 브라우저에서 / 접속 시 /question/list로 이동 확인
+
+### 008-01 서비스(책 2-09), QuestionService 도입
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/008-01)
+- 작업: QuestionService를 추가하고 컨트롤러가 리포지터리 대신 서비스를 사용
+- 이유: 컨트롤러와 데이터 접근 사이에 비즈니스 로직 계층을 둠
+- 결과: 기존 테스트(목록 MockMvc 포함) 모두 통과
