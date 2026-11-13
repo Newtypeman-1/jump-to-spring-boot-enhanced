@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -33,7 +34,7 @@ class AnswerControllerTest {
     void t1() throws Exception {
         Question question = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
 
-        mvc.perform(post("/answer/create/" + question.getId()).param("content", "답변입니다."))
+        mvc.perform(post("/answer/create/" + question.getId()).with(csrf()).param("content", "답변입니다."))
                 .andExpect(handler().handlerType(AnswerController.class))
                 .andExpect(handler().methodName("create"))
                 .andExpect(status().is3xxRedirection())
@@ -46,7 +47,7 @@ class AnswerControllerTest {
     @Test
     @DisplayName("POST /answer/create/{id}: 없는 질문이면 404")
     void t2() throws Exception {
-        mvc.perform(post("/answer/create/999999").param("content", "답변입니다."))
+        mvc.perform(post("/answer/create/999999").with(csrf()).param("content", "답변입니다."))
                 .andExpect(status().isNotFound());
     }
 
@@ -55,7 +56,7 @@ class AnswerControllerTest {
     void t3() throws Exception {
         Question question = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
 
-        mvc.perform(post("/answer/create/" + question.getId()).param("content", " "))
+        mvc.perform(post("/answer/create/" + question.getId()).with(csrf()).param("content", " "))
                 .andExpect(status().isOk())
                 .andExpect(view().name("question/question/detail"))
                 .andExpect(model().attributeHasFieldErrors("form", "content"))

@@ -210,3 +210,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: 목록 제목 옆에 답변 개수를 표시하고, 답변을 질문 묶음 단위로 한 번에 조회
 - 이유: 답변이 달린 질문을 목록에서 구분, 질문마다 답변 SELECT가 나가는 N+1 방지
 - 결과: 테스트 통과, 목록에 답변 개수 표시, 로그에서 answer ... question_id in (?, ...) 1회 조회 확인
+
+### 020-01 스프링 시큐리티(책 3-05), 의존성과 SecurityConfig
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/020-01)
+- 작업: Spring Security를 추가하고 모든 URL 허용, H2 콘솔용 CSRF·frame 예외 설정
+- 이유: 회원가입·로그인 구현 전 보안 필터를 먼저 적용
+- 결과: 테스트 28개 통과, 폼에 _csrf 자동 삽입, 토큰 없는 POST는 403, H2 콘솔 정상 접속

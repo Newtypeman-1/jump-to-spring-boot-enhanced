@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.hamcrest.Matchers.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -86,7 +87,7 @@ class QuestionControllerTest {
     @Test
     @DisplayName("POST /question/create: 질문을 저장하고 목록으로 리다이렉트한다")
     void t6() throws Exception {
-        mvc.perform(post("/question/create")
+        mvc.perform(post("/question/create").with(csrf())
                         .param("subject", "새 질문")
                         .param("content", "새 질문 내용"))
                 .andExpect(status().is3xxRedirection())
@@ -100,7 +101,7 @@ class QuestionControllerTest {
     void t7() throws Exception {
         long count = questionRepository.count();
 
-        mvc.perform(post("/question/create")
+        mvc.perform(post("/question/create").with(csrf())
                         .param("subject", "")
                         .param("content", " "))
                 .andExpect(status().isOk())
@@ -168,5 +169,21 @@ class QuestionControllerTest {
 
         mvc.perform(get("/question/list"))
                 .andExpect(content().string(containsString("text-danger small ms-2\">3</span>")));
+    }
+
+    @Test
+    @DisplayName("POST /question/create: CSRF 토큰이 없으면 403")
+    void t13() throws Exception {
+        mvc.perform(post("/question/create")
+                        .param("subject", "제목")
+                        .param("content", "내용"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("GET /question/create: 폼에 CSRF 토큰 hidden 필드가 자동으로 들어간다")
+    void t14() throws Exception {
+        mvc.perform(get("/question/create"))
+                .andExpect(content().string(containsString("name=\"_csrf\"")));
     }
 }
