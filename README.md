@@ -72,3 +72,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: QuestionRepository, Question 생성자, 저장·전체 조회·단건 조회 테스트 추가
 - 이유: 리포지터리로 질문을 저장·조회하고 작성일 자동 기록을 확인
 - 결과: 테스트 3개 통과, 저장 시 id·작성일·수정일 자동 기록 확인
+
+### 005-02 리포지터리(책 2-05), 쿼리 메서드 findBySubject/And/Like
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/005-02)
+- 작업: 제목, 제목+내용, 제목 일부로 질문을 찾는 쿼리 메서드와 테스트 추가
+- 이유: 메서드 이름만으로 JPA가 쿼리를 만드는 방식 익히기
+- 결과: 테스트 6개 통과, 로그에서 where subject=? / like ? SQL 확인
