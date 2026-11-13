@@ -1,5 +1,6 @@
 package com.newtype.enhanced.domain.question.question.controller;
 
+import com.newtype.enhanced.domain.question.answer.controller.AnswerController;
 import com.newtype.enhanced.domain.question.question.entity.Question;
 import com.newtype.enhanced.domain.question.question.service.QuestionService;
 import com.newtype.enhanced.global.exception.DataNotFoundException;
@@ -36,7 +37,11 @@ public class QuestionController {
 
     @GetMapping("/detail/{id}")
     @Transactional(readOnly = true)
-    public String detail(@PathVariable int id, Model model) {
+    public String detail(
+            @PathVariable int id,
+            @ModelAttribute("form") AnswerController.CreateForm form,
+            Model model
+    ) {
         Question question = questionService.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("question not found"));
         model.addAttribute("question", question);

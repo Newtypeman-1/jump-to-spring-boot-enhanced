@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -47,5 +48,19 @@ class AnswerControllerTest {
     void t2() throws Exception {
         mvc.perform(post("/answer/create/999999").param("content", "답변입니다."))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("POST /answer/create/{id}: 내용이 비면 상세 화면에 오류를 보여주고 저장하지 않는다")
+    void t3() throws Exception {
+        Question question = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+
+        mvc.perform(post("/answer/create/" + question.getId()).param("content", " "))
+                .andExpect(status().isOk())
+                .andExpect(view().name("question/question/detail"))
+                .andExpect(model().attributeHasFieldErrors("form", "content"))
+                .andExpect(content().string(containsString("내용은 필수항목입니다.")));
+
+        assertThat(question.getAnswerList()).isEmpty();
     }
 }
