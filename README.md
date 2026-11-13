@@ -48,3 +48,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: dev는 H2 파일 DB(./db_dev)와 h2-console, test는 H2 메모리 DB 설정
 - 이유: 테스트가 개발 데이터를 건드리지 않고 매번 빈 DB로 시작
 - 결과: 테스트 통과(메모리 DB), db_dev.mv.db 생성, h2-console 접속 확인
+
+### 004-01 Question 엔티티(책 2-04), BaseEntity와 JPA Auditing
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/004-01)
+- 작업: 공통 필드(id, 작성일, 수정일)를 담은 BaseEntity와 Question 엔티티 추가
+- 이유: 작성일·수정일을 JPA Auditing으로 자동 기록, setter 없이 엔티티 관리
+- 결과: dev DB에 QUESTION 테이블 생성 확인
