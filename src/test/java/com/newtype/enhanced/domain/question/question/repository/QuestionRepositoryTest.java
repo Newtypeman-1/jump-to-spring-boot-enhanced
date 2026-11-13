@@ -1,6 +1,8 @@
 package com.newtype.enhanced.domain.question.question.repository;
 
+import com.newtype.enhanced.domain.question.answer.entity.Answer;
 import com.newtype.enhanced.domain.question.question.entity.Question;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ class QuestionRepositoryTest {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private EntityManager em;
 
     @Test
     @DisplayName("질문 저장: id가 발급되고 작성일·수정일이 자동으로 채워진다")
@@ -110,5 +115,45 @@ class QuestionRepositoryTest {
         questionRepository.delete(question);
 
         assertThat(questionRepository.count()).isZero();
+    }
+
+    @Test
+    @DisplayName("답변 저장: addAnswer 후 flush하면 cascade PERSIST로 답변도 저장된다")
+    void t9() {
+        Question question = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+
+        Answer answer = question.addAnswer("네 자동으로 생성됩니다.");
+        questionRepository.flush();
+
+        assertThat(answer.getId()).isPositive();
+        assertThat(answer.getCreateDate()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("답변으로 질문 조회: answer.getQuestion")
+    void t10() {
+        Question question = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+        Answer saved = question.addAnswer("네 자동으로 생성됩니다.");
+        questionRepository.flush();
+        em.clear();
+
+        Answer answer = em.find(Answer.class, saved.getId());
+
+        assertThat(answer.getQuestion().getId()).isEqualTo(question.getId());
+    }
+
+    @Test
+    @DisplayName("질문으로 답변 목록 조회: LAZY 로딩은 트랜잭션 안에서 동작한다")
+    void t11() {
+        Question saved = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+        saved.addAnswer("네 자동으로 생성됩니다.");
+        questionRepository.flush();
+        em.clear();
+
+        Question question = questionRepository.findById(saved.getId()).get();
+        List<Answer> answers = question.getAnswerList();
+
+        assertThat(answers).hasSize(1);
+        assertThat(answers.get(0).getContent()).isEqualTo("네 자동으로 생성됩니다.");
     }
 }

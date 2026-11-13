@@ -20,4 +20,9 @@ public class Answer extends BaseEntity {
 
     @ManyToOne(fetch = LAZY)
     private Question question;
+
+    public Answer(Question question, String content) {
+        this.question = question;
+        this.content = content;
+    }
 }

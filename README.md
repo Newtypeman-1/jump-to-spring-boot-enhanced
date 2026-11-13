@@ -84,3 +84,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: Question.modify 도메인 메서드와 수정·삭제 테스트 추가
 - 이유: setter 없이 변경 감지로 수정하고, 수정일 자동 갱신 확인
 - 결과: 테스트 8개 통과, flush 시 UPDATE 실행과 수정일 갱신 확인
+
+### 005-04 리포지터리(책 2-05), 답변 저장·조회와 LAZY 로딩
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/005-04)
+- 작업: Answer 생성자, Question.addAnswer, 답변 저장·조회·LAZY 로딩 테스트 추가
+- 이유: AnswerRepository 없이 질문을 통해 답변을 다루는 구조 확인
+- 결과: 테스트 11개 통과, cascade로 답변 INSERT와 지연 조회 SELECT 확인

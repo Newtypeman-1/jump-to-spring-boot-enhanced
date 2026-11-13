@@ -37,4 +37,10 @@ public class Question extends BaseEntity {
         this.subject = subject;
         this.content = content;
     }
+
+    public Answer addAnswer(String content) {
+        Answer answer = new Answer(this, content);
+        answerList.add(answer);
+        return answer;
+    }
 }
