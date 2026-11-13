@@ -1,3 +1,5 @@
 spring:
   application:
     name: jump-to-spring-boot-enhanced
+  profiles:
+    active: dev

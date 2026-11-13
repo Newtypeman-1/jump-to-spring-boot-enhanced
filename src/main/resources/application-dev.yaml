@@ -1,0 +1,4 @@
+# 개발 환경 설정 (DB 설정은 003에서 추가)
+spring:
+  thymeleaf:
+    cache: false
