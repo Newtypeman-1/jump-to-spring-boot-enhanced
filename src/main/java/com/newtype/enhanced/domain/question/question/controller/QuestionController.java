@@ -9,16 +9,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
 @Controller
+@RequestMapping("/question")
 @RequiredArgsConstructor
 public class QuestionController {
 
     private final QuestionService questionService;
 
-    @GetMapping("/question/list")
+    @GetMapping("/list")
     @Transactional(readOnly = true)
     public String list(Model model) {
         List<Question> questionList = questionService.findAll();
@@ -26,7 +28,7 @@ public class QuestionController {
         return "question/question/list";
     }
 
-    @GetMapping("/question/detail/{id}")
+    @GetMapping("/detail/{id}")
     @Transactional(readOnly = true)
     public String detail(@PathVariable int id, Model model) {
         Question question = questionService.findById(id)

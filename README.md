@@ -126,3 +126,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: 질문 상세 URL·템플릿, 목록의 제목 링크, 없는 질문의 404 처리 추가
 - 이유: 목록에서 질문을 눌러 내용을 볼 수 있게
 - 결과: 테스트 통과, 브라우저 /question/detail/1에서 제목·내용 확인
+
+### 010-01 URL 프리픽스(책 2-11), @RequestMapping("/question")
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/010-01)
+- 작업: QuestionController에 공통 URL 프리픽스 /question 적용
+- 이유: 메서드마다 반복되는 /question을 클래스에서 한 번만 선언
+- 결과: URL은 그대로이고 기존 MockMvc 테스트 모두 통과
