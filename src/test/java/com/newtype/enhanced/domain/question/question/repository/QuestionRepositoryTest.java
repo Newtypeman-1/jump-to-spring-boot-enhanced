@@ -169,4 +169,16 @@ class QuestionRepositoryTest {
         assertThat(answers).hasSize(1);
         assertThat(answers.get(0).getContent()).isEqualTo("네 자동으로 생성됩니다.");
     }
+
+    @Test
+    @DisplayName("isModified: 새로 저장하면 false, 수정 후 flush하면 true")
+    void t12() {
+        Question question = questionRepository.save(new Question(author, "제목", "내용"));
+        assertThat(question.isModified()).isFalse();
+
+        question.modify("수정된 제목", "내용");
+        questionRepository.flush();
+
+        assertThat(question.isModified()).isTrue();
+    }
 }

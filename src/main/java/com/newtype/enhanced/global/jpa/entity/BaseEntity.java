@@ -28,6 +28,11 @@ public abstract class BaseEntity {
     @LastModifiedDate
     private LocalDateTime modifyDate;
 
+    // 저장할 때 Auditing이 createDate와 modifyDate를 같은 시각으로 채우므로, 다르면 수정된 것
+    public boolean isModified() {
+        return modifyDate != null && !modifyDate.equals(createDate);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
