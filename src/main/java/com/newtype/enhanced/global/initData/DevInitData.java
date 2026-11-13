@@ -1,0 +1,40 @@
+package com.newtype.enhanced.global.initData;
+
+import com.newtype.enhanced.domain.question.question.entity.Question;
+import com.newtype.enhanced.domain.question.question.repository.QuestionRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
+import org.springframework.transaction.annotation.Transactional;
+
+@Configuration
+@Profile("dev")
+@RequiredArgsConstructor
+public class DevInitData {
+
+    @Autowired
+    @Lazy
+    private DevInitData self;
+
+    private final QuestionRepository questionRepository;
+
+    @Bean
+    public ApplicationRunner devInitDataApplicationRunner() {
+        return args -> self.work1();
+    }
+
+    @Transactional
+    public void work1() {
+        if (questionRepository.count() > 0) return;
+
+        Question question1 = questionRepository.save(new Question("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다."));
+        question1.addAnswer("sbb는 점프 투 스프링부트로 만드는 게시판입니다.");
+
+        Question question2 = questionRepository.save(new Question("스프링부트 모델 질문입니다.", "id는 자동으로 생성되나요?"));
+        question2.addAnswer("네 자동으로 생성됩니다.");
+    }
+}

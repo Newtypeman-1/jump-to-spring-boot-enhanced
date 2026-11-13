@@ -96,3 +96,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: GET /question/list 컨트롤러, 타임리프 목록 템플릿, MockMvc 테스트 추가
 - 이유: 저장된 질문을 화면에 표 형태로 보여주기
 - 결과: 테스트 통과, 브라우저에서 /question/list 표 헤더 렌더링 확인
+
+### 006-02 질문 목록(책 2-07), dev 샘플 데이터 DevInitData
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/006-02)
+- 작업: dev 프로필에서 앱 시작 시 질문 2개와 답변을 넣는 DevInitData 추가
+- 이유: 목록 화면을 확인할 데이터를 테스트 코드 없이 자동으로 준비
+- 결과: 브라우저 /question/list에 샘플 질문 2개 표시, ANSWER 테이블에 답변 2개 확인
