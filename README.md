@@ -60,3 +60,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: Answer 엔티티와 Question-Answer 양방향 연관관계 추가
 - 이유: 질문 하나에 여러 답변을 다는 구조를 테이블로 매핑
 - 결과: dev DB에 ANSWER 테이블과 QUESTION_ID 외래 키 생성 확인
+
+### 004-03 SQL 로그 설정(책 2-04), 실행 SQL과 바인딩 값 출력
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/004-03)
+- 작업: Hibernate SQL을 보기 좋게 출력하고 바인딩 값·트랜잭션 로그 추가
+- 이유: JPA가 실제로 어떤 SQL을 실행하는지 확인하며 학습
+- 결과: 테스트 로그에 create table question/answer와 외래 키 SQL 출력 확인
