@@ -114,3 +114,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: QuestionService를 추가하고 컨트롤러가 리포지터리 대신 서비스를 사용
 - 이유: 컨트롤러와 데이터 접근 사이에 비즈니스 로직 계층을 둠
 - 결과: 기존 테스트(목록 MockMvc 포함) 모두 통과
+
+### 008-02 서비스(책 2-09), 컨트롤러 @Transactional과 auto-commit false
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/008-02)
+- 작업: 질문 목록 컨트롤러에 읽기 전용 트랜잭션, hikari auto-commit false 설정
+- 이유: 요청 하나를 트랜잭션 하나로 묶어 화면 렌더링까지 같은 영속성 컨텍스트 사용
+- 결과: 테스트 통과, 로그에서 QuestionController.list 트랜잭션 시작·종료 확인

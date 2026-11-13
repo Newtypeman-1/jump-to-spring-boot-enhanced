@@ -3,6 +3,9 @@ spring:
     name: jump-to-spring-boot-enhanced
   profiles:
     active: dev
+  datasource:
+    hikari:
+      auto-commit: false
   jpa:
     properties:
       hibernate:
