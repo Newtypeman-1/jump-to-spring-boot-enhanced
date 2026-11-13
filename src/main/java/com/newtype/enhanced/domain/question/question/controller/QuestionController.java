@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -17,8 +18,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 
 @Controller
 @RequestMapping("/question")
@@ -29,9 +30,9 @@ public class QuestionController {
 
     @GetMapping("/list")
     @Transactional(readOnly = true)
-    public String list(Model model) {
-        List<Question> questionList = questionService.findAll();
-        model.addAttribute("questionList", questionList);
+    public String list(@RequestParam(defaultValue = "0") int page, Model model) {
+        Page<Question> paging = questionService.findAll(page);
+        model.addAttribute("paging", paging);
         return "question/question/list";
     }
 

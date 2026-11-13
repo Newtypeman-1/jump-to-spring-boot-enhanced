@@ -11,7 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -117,5 +117,19 @@ class QuestionControllerTest {
     void t8() throws Exception {
         mvc.perform(get("/question/list"))
                 .andExpect(content().string(containsString("navbar-brand")));
+    }
+
+    @Test
+    @DisplayName("GET /question/list?page=1: 최신순으로 10개씩 나눠 보여준다")
+    void t9() throws Exception {
+        for (int i = 1; i <= 15; i++) {
+            questionRepository.save(new Question("페이징 질문 %02d".formatted(i), "내용"));
+        }
+
+        mvc.perform(get("/question/list").param("page", "1"))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("paging", hasProperty("number", is(1))))
+                .andExpect(content().string(containsString("페이징 질문 05")))
+                .andExpect(content().string(not(containsString("페이징 질문 06"))));
     }
 }

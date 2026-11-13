@@ -24,7 +24,10 @@ public class DevInitData {
 
     @Bean
     public ApplicationRunner devInitDataApplicationRunner() {
-        return args -> self.work1();
+        return args -> {
+            self.work1();
+            self.work2();
+        };
     }
 
     @Transactional
@@ -36,5 +39,14 @@ public class DevInitData {
 
         Question question2 = questionRepository.save(new Question("스프링부트 모델 질문입니다.", "id는 자동으로 생성되나요?"));
         question2.addAnswer("네 자동으로 생성됩니다.");
+    }
+
+    @Transactional
+    public void work2() {
+        if (questionRepository.count() >= 300) return;
+
+        for (int i = 1; i <= 300; i++) {
+            questionRepository.save(new Question("테스트 데이터입니다:[%03d]".formatted(i), "내용무"));
+        }
     }
 }
