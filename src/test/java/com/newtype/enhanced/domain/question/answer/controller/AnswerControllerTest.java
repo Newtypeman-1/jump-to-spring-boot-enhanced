@@ -165,4 +165,15 @@ class AnswerControllerTest {
 
         assertThat(answer.getQuestion().getAnswerList()).hasSize(1);
     }
+
+    @Test
+    @DisplayName("POST /answer/vote/{id}: 답변 추천")
+    void t10() throws Exception {
+        Answer answer = saveAnswer();
+
+        mvc.perform(post("/answer/vote/" + answer.getId()).with(csrf()).with(user("user1")))
+                .andExpect(redirectedUrl("/question/detail/" + answer.getQuestion().getId()));
+
+        assertThat(answer.getVoter()).extracting("username").containsExactly("user1");
+    }
 }

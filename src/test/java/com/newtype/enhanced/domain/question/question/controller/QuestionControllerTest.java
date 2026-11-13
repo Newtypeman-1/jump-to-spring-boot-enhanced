@@ -287,4 +287,19 @@ class QuestionControllerTest {
 
         assertThat(questionRepository.findById(question.getId())).isPresent();
     }
+
+    @Test
+    @DisplayName("POST /question/vote/{id}: 추천하면 추천 수가 늘고, 같은 사람이 다시 추천해도 1번만 센다")
+    void t22() throws Exception {
+        Question question = questionRepository.save(new Question(author, "추천 질문", "내용"));
+        userService.create("user2", "1234", "user2@test.com");
+
+        mvc.perform(post("/question/vote/" + question.getId()).with(csrf()).with(user("user2")))
+                .andExpect(redirectedUrl("/question/detail/" + question.getId()));
+        mvc.perform(post("/question/vote/" + question.getId()).with(csrf()).with(user("user2")));
+
+        assertThat(question.getVoter()).hasSize(1);
+        mvc.perform(get("/question/detail/" + question.getId()))
+                .andExpect(content().string(containsString("bg-success\">1</span>")));
+    }
 }

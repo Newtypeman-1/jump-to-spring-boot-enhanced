@@ -5,13 +5,16 @@ import com.newtype.enhanced.domain.user.user.entity.SiteUser;
 import com.newtype.enhanced.global.jpa.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.CascadeType.REMOVE;
@@ -24,6 +27,9 @@ public class Question extends BaseEntity {
 
     @ManyToOne(fetch = LAZY)
     private SiteUser author;
+
+    @ManyToMany
+    private Set<SiteUser> voter = new HashSet<>();
 
     @Column(length = 200)
     private String subject;
@@ -57,5 +63,9 @@ public class Question extends BaseEntity {
 
     public boolean isAuthoredBy(String username) {
         return author != null && author.getUsername().equals(username);
+    }
+
+    public void vote(SiteUser user) {
+        voter.add(user);
     }
 }

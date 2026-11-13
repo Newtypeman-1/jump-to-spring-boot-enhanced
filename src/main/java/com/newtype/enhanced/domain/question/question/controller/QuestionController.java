@@ -138,6 +138,16 @@ public class QuestionController {
         return "redirect:/";
     }
 
+    @PostMapping("/vote/{id}")
+    @PreAuthorize("isAuthenticated()")
+    @Transactional
+    public String vote(@PathVariable int id, Principal principal) {
+        Question question = questionService.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("question not found"));
+        question.vote(userService.getByUsername(principal.getName()));
+        return "redirect:/question/detail/%d".formatted(id);
+    }
+
     private Question findQuestionOwnedBy(int id, Principal principal) {
         Question question = questionService.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("question not found"));

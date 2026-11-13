@@ -26,6 +26,15 @@
                         <div th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                     </div>
                 </div>
+                <div class="my-3">
+                    <form th:action="@{|/question/vote/${question.id}|}" method="post" class="d-inline"
+                          onsubmit="return confirm('정말로 추천하시겠습니까?');">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                            추천
+                            <span class="badge rounded-pill bg-success" th:text="${question.voter.size()}"></span>
+                        </button>
+                    </form>
+                </div>
                 <div class="my-3" sec:authorize="isAuthenticated()"
                      th:if="${question.isAuthoredBy(#authentication.name)}">
                     <a th:href="@{|/question/modify/${question.id}|}" class="btn btn-sm btn-outline-secondary">수정</a>
@@ -55,6 +64,15 @@
                         </div>
                         <div th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></div>
                     </div>
+                </div>
+                <div class="my-3">
+                    <form th:action="@{|/answer/vote/${answer.id}|}" method="post" class="d-inline"
+                          onsubmit="return confirm('정말로 추천하시겠습니까?');">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                            추천
+                            <span class="badge rounded-pill bg-success" th:text="${answer.voter.size()}"></span>
+                        </button>
+                    </form>
                 </div>
                 <div class="my-3" sec:authorize="isAuthenticated()"
                      th:if="${answer.isAuthoredBy(#authentication.name)}">

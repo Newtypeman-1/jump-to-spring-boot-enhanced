@@ -110,6 +110,16 @@ public class AnswerController {
         return "redirect:/question/detail/%d".formatted(question.getId());
     }
 
+    @PostMapping("/vote/{id}")
+    @PreAuthorize("isAuthenticated()")
+    @Transactional
+    public String vote(@PathVariable int id, Principal principal) {
+        Answer answer = answerService.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("answer not found"));
+        answer.vote(userService.getByUsername(principal.getName()));
+        return "redirect:/question/detail/%d".formatted(answer.getQuestion().getId());
+    }
+
     private Answer findAnswerOwnedBy(int id, Principal principal) {
         Answer answer = answerService.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("answer not found"));
