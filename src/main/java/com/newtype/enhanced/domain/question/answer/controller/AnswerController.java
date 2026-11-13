@@ -59,8 +59,8 @@ public class AnswerController {
         }
 
         SiteUser author = userService.getByUsername(principal.getName());
-        question.addAnswer(author, form.content());
-        return "redirect:/question/detail/%d".formatted(id);
+        Answer answer = questionService.addAnswer(question, author, form.content());
+        return redirectToAnswer(answer);
     }
 
     public record ModifyForm(
@@ -97,7 +97,7 @@ public class AnswerController {
         }
 
         answer.modify(form.content());
-        return "redirect:/question/detail/%d".formatted(answer.getQuestion().getId());
+        return redirectToAnswer(answer);
     }
 
     @PostMapping("/delete/{id}")
@@ -117,7 +117,11 @@ public class AnswerController {
         Answer answer = answerService.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("answer not found"));
         answer.vote(userService.getByUsername(principal.getName()));
-        return "redirect:/question/detail/%d".formatted(answer.getQuestion().getId());
+        return redirectToAnswer(answer);
+    }
+
+    private String redirectToAnswer(Answer answer) {
+        return "redirect:/question/detail/%d#answer_%d".formatted(answer.getQuestion().getId(), answer.getId());
     }
 
     private Answer findAnswerOwnedBy(int id, Principal principal) {

@@ -1,5 +1,6 @@
 package com.newtype.enhanced.domain.question.question.service;
 
+import com.newtype.enhanced.domain.question.answer.entity.Answer;
 import com.newtype.enhanced.domain.question.question.entity.Question;
 import com.newtype.enhanced.domain.question.question.repository.QuestionRepository;
 import com.newtype.enhanced.domain.user.user.entity.SiteUser;
@@ -31,5 +32,12 @@ public class QuestionService {
 
     public void delete(Question question) {
         questionRepository.delete(question);
+    }
+
+    // 답변 id는 INSERT 후에 정해지므로, 앵커(#answer_{id})로 이동하려면 바로 flush
+    public Answer addAnswer(Question question, SiteUser author, String content) {
+        Answer answer = question.addAnswer(author, content);
+        questionRepository.flush();
+        return answer;
     }
 }

@@ -58,9 +58,10 @@ class AnswerControllerTest {
                 .andExpect(handler().handlerType(AnswerController.class))
                 .andExpect(handler().methodName("create"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/question/detail/" + question.getId()));
+                .andExpect(redirectedUrlPattern("/question/detail/" + question.getId() + "#answer_*"));
 
         assertThat(question.getAnswerList()).hasSize(1);
+        assertThat(question.getAnswerList().get(0).getId()).isPositive();
         assertThat(question.getAnswerList().get(0).getContent()).isEqualTo("답변입니다.");
         assertThat(question.getAnswerList().get(0).getAuthor().getUsername()).isEqualTo("user1");
     }
@@ -123,7 +124,7 @@ class AnswerControllerTest {
 
         mvc.perform(post("/answer/modify/" + answer.getId()).with(csrf()).with(user("user1"))
                         .param("content", "수정 후 답변"))
-                .andExpect(redirectedUrl("/question/detail/" + answer.getQuestion().getId()));
+                .andExpect(redirectedUrl("/question/detail/%d#answer_%d".formatted(answer.getQuestion().getId(), answer.getId())));
 
         assertThat(answer.getContent()).isEqualTo("수정 후 답변");
     }
@@ -172,7 +173,7 @@ class AnswerControllerTest {
         Answer answer = saveAnswer();
 
         mvc.perform(post("/answer/vote/" + answer.getId()).with(csrf()).with(user("user1")))
-                .andExpect(redirectedUrl("/question/detail/" + answer.getQuestion().getId()));
+                .andExpect(redirectedUrl("/question/detail/%d#answer_%d".formatted(answer.getQuestion().getId(), answer.getId())));
 
         assertThat(answer.getVoter()).extracting("username").containsExactly("user1");
     }
