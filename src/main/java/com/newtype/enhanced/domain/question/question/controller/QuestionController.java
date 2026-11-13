@@ -3,15 +3,19 @@ package com.newtype.enhanced.domain.question.question.controller;
 import com.newtype.enhanced.domain.question.question.entity.Question;
 import com.newtype.enhanced.domain.question.question.service.QuestionService;
 import com.newtype.enhanced.global.exception.DataNotFoundException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -39,15 +43,28 @@ public class QuestionController {
         return "question/question/detail";
     }
 
+    record CreateForm(
+            @NotBlank(message = "01-subject-제목은 필수항목입니다.")
+            @Size(max = 200, message = "01-subject-제목은 200자 이하로 입력해주세요.")
+            String subject,
+            @NotBlank(message = "02-content-내용은 필수항목입니다.")
+            String content
+    ) {
+    }
+
     @GetMapping("/create")
-    public String showCreate() {
+    public String showCreate(@ModelAttribute("form") CreateForm form) {
         return "question/question/create";
     }
 
     @PostMapping("/create")
     @Transactional
-    public String create(@RequestParam String subject, @RequestParam String content) {
-        questionService.create(subject, content);
+    public String create(@Valid @ModelAttribute("form") CreateForm form, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "question/question/create";
+        }
+
+        questionService.create(form.subject(), form.content());
         return "redirect:/question/list";
     }
 }

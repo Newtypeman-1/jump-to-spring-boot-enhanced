@@ -94,4 +94,21 @@ class QuestionControllerTest {
 
         assertThat(questionRepository.findBySubject("새 질문")).isPresent();
     }
+
+    @Test
+    @DisplayName("POST /question/create: 제목·내용이 비면 폼을 다시 보여주고 오류를 순서대로 출력한다")
+    void t7() throws Exception {
+        long count = questionRepository.count();
+
+        mvc.perform(post("/question/create")
+                        .param("subject", "")
+                        .param("content", " "))
+                .andExpect(status().isOk())
+                .andExpect(view().name("question/question/create"))
+                .andExpect(model().attributeHasFieldErrors("form", "subject", "content"))
+                .andExpect(content().string(containsString("제목은 필수항목입니다.")))
+                .andExpect(content().string(containsString("내용은 필수항목입니다.")));
+
+        assertThat(questionRepository.count()).isEqualTo(count);
+    }
 }
