@@ -102,3 +102,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: dev 프로필에서 앱 시작 시 질문 2개와 답변을 넣는 DevInitData 추가
 - 이유: 목록 화면을 확인할 데이터를 테스트 코드 없이 자동으로 준비
 - 결과: 브라우저 /question/list에 샘플 질문 2개 표시, ANSWER 테이블에 답변 2개 확인
+
+### 007-01 루트 URL(책 2-08), / → 질문 목록 리다이렉트
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/007-01)
+- 작업: GET / 요청을 /question/list로 리다이렉트하는 MainController 추가
+- 이유: 사이트 첫 화면을 질문 목록으로
+- 결과: 테스트 통과, 브라우저에서 / 접속 시 /question/list로 이동 확인
