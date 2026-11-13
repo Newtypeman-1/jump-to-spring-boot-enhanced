@@ -12,7 +12,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("test")
@@ -71,5 +73,25 @@ class QuestionControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("2개의 답변이 있습니다.")))
                 .andExpect(content().string(containsString("두 번째 답변")));
+    }
+
+    @Test
+    @DisplayName("GET /question/create: 질문 등록 폼을 보여준다")
+    void t5() throws Exception {
+        mvc.perform(get("/question/create"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("question/question/create"));
+    }
+
+    @Test
+    @DisplayName("POST /question/create: 질문을 저장하고 목록으로 리다이렉트한다")
+    void t6() throws Exception {
+        mvc.perform(post("/question/create")
+                        .param("subject", "새 질문")
+                        .param("content", "새 질문 내용"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/question/list"));
+
+        assertThat(questionRepository.findBySubject("새 질문")).isPresent();
     }
 }

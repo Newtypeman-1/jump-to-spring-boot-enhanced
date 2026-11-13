@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -35,5 +37,17 @@ public class QuestionController {
                 .orElseThrow(() -> new DataNotFoundException("question not found"));
         model.addAttribute("question", question);
         return "question/question/detail";
+    }
+
+    @GetMapping("/create")
+    public String showCreate() {
+        return "question/question/create";
+    }
+
+    @PostMapping("/create")
+    @Transactional
+    public String create(@RequestParam String subject, @RequestParam String content) {
+        questionService.create(subject, content);
+        return "redirect:/question/list";
     }
 }

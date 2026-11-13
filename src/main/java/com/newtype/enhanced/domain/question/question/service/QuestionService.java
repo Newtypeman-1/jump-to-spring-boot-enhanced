@@ -21,4 +21,8 @@ public class QuestionService {
     public Optional<Question> findById(int id) {
         return questionRepository.findById(id);
     }
+
+    public Question create(String subject, String content) {
+        return questionRepository.save(new Question(subject, content));
+    }
 }

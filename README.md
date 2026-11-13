@@ -162,3 +162,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: thymeleaf-layout-dialect로 공통 레이아웃을 만들고 목록·상세 템플릿이 상속
 - 이유: head(CSS·JS)와 기본 HTML 구조를 한 곳에서 관리
 - 결과: 브라우저에서 레이아웃 적용, 탭 제목 "sbb가 무엇인가요? - SBB" 확인
+
+### 015-01 질문 등록(책 2-16), 등록 화면과 저장
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/015-01)
+- 작업: 질문 등록 버튼·화면, GET/POST /question/create, QuestionService.create 추가
+- 이유: 사용자가 직접 질문을 작성할 수 있게
+- 결과: 테스트 통과, 브라우저에서 질문 등록 후 목록에 3번째 질문 표시 확인
