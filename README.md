@@ -216,3 +216,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: Spring Security를 추가하고 모든 URL 허용, H2 콘솔용 CSRF·frame 예외 설정
 - 이유: 회원가입·로그인 구현 전 보안 필터를 먼저 적용
 - 결과: 테스트 28개 통과, 폼에 _csrf 자동 삽입, 토큰 없는 POST는 403, H2 콘솔 정상 접속
+
+### 021-01 회원가입(책 3-06), SiteUser와 가입 폼
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/021-01)
+- 작업: SiteUser 엔티티·리포지터리·서비스, 비밀번호 암호화, 회원가입 화면과 검증 추가
+- 이유: 로그인과 글쓴이 기능의 기반이 되는 회원 정보 저장
+- 결과: 테스트 32개 통과, 브라우저 가입 후 SITE_USER에 {bcrypt} 비밀번호로 저장 확인
