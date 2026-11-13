@@ -27,4 +27,9 @@ public class Question extends BaseEntity {
 
     @OneToMany(mappedBy = "question", cascade = {PERSIST, REMOVE}, orphanRemoval = true)
     private List<Answer> answerList = new ArrayList<>();
+
+    public Question(String subject, String content) {
+        this.subject = subject;
+        this.content = content;
+    }
 }

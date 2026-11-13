@@ -66,3 +66,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: Hibernate SQL을 보기 좋게 출력하고 바인딩 값·트랜잭션 로그 추가
 - 이유: JPA가 실제로 어떤 SQL을 실행하는지 확인하며 학습
 - 결과: 테스트 로그에 create table question/answer와 외래 키 SQL 출력 확인
+
+### 005-01 리포지터리(책 2-05), QuestionRepository와 저장·조회 테스트
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/005-01)
+- 작업: QuestionRepository, Question 생성자, 저장·전체 조회·단건 조회 테스트 추가
+- 이유: 리포지터리로 질문을 저장·조회하고 작성일 자동 기록을 확인
+- 결과: 테스트 3개 통과, 저장 시 id·작성일·수정일 자동 기록 확인
