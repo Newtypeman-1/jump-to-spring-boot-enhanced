@@ -54,3 +54,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: 공통 필드(id, 작성일, 수정일)를 담은 BaseEntity와 Question 엔티티 추가
 - 이유: 작성일·수정일을 JPA Auditing으로 자동 기록, setter 없이 엔티티 관리
 - 결과: dev DB에 QUESTION 테이블 생성 확인
+
+### 004-02 Answer 엔티티(책 2-04), Question과 연관관계
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/004-02)
+- 작업: Answer 엔티티와 Question-Answer 양방향 연관관계 추가
+- 이유: 질문 하나에 여러 답변을 다는 구조를 테이블로 매핑
+- 결과: dev DB에 ANSWER 테이블과 QUESTION_ID 외래 키 생성 확인
