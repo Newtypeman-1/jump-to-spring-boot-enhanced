@@ -68,7 +68,7 @@
 - 책: `/question/list`, `/question/detail/{id}`, `/answer/create/{id}`...
 - jhs512(14168): `/posts`, `/posts/{id}`, `PUT /posts/{id}/modify`, `DELETE /posts/{postId}/comments/{id}/delete`(hidden method 필터)
 - 이 프로젝트: 1단계는 **책 URL을 그대로** 사용(완료). RESTful 리팩터링은 아직 하지 않음
-  - 단, 상태를 바꾸는 요청(로그아웃, 삭제, 추천)은 책의 GET 링크 대신 처음부터 CSRF 토큰을 포함한 POST로 만듦
+  - 단, 상태를 바꾸는 요청(삭제, 추천)은 책의 GET 링크 대신 CSRF 토큰을 포함한 POST로 만듦(로그아웃은 029-06에서 책처럼 GET 링크로 되돌림)
 
 ## 9. 화면
 
@@ -94,7 +94,7 @@ Boot 4·Security 7 때문에 책 코드가 그대로는 동작하지 않는 부�
 | 019-01 | `default_batch_fetch_size: 100` | 질문마다 답변 SELECT | 029-03 |
 | 020-01 | `frameOptions().sameOrigin()`, `@EnableWebSecurity` 생략 | `XFrameOptionsHeaderWriter`, `@EnableWebSecurity` | 029-04 |
 | 021-01 | 저장 전 `existsBy` 검사·필드별 오류, `DelegatingPasswordEncoder`, 비밀번호 확인은 다른 오류 없을 때만 | `DataIntegrityViolationException` 처리, `BCryptPasswordEncoder` | 029-05 |
-| 022-01 | POST 로그아웃, `User.withUsername` 빌더, `AuthenticationManager` 미등록, 내비게이션 바 사용자ID | GET 로그아웃 링크, `new User(..., authorities)`, `AuthenticationManager` 빈 | 예정 |
+| 022-01 | POST 로그아웃, `User.withUsername` 빌더, `AuthenticationManager` 미등록, 내비게이션 바 사용자ID | GET 로그아웃 링크, `new User(..., authorities)`, `AuthenticationManager` 빈 | 029-06 |
 | 023-02 | 비로그인 답변창 안내 문구 | 비활성 입력창만 | 예정 |
 | 024 | 권한 없음 403, `isAuthoredBy` 메서드 | 400(`BAD_REQUEST`), 템플릿·컨트롤러에서 username 비교 | 예정 |
 | 025-01 | POST 추천 | GET 추천 링크(JS confirm) | 예정 |
