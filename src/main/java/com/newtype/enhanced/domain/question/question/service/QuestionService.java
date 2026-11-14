@@ -19,7 +19,7 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
 
     public Page<Question> findAll(int page, String kw) {
-        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Order.desc("id")));
+        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Order.desc("createDate")));
 
         if (kw.isBlank()) {
             return questionRepository.findAll(pageRequest);
