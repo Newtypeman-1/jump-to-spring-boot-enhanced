@@ -61,7 +61,7 @@
 - 책: `@SpringBootTest`만 사용
 - jhs512: `@ActiveProfiles("test") @SpringBootTest @Transactional`, 메서드 `t1`, `t2`... + `@DisplayName`.
   `@Transactional`이 없으면 LAZY 로딩 테스트가 실패하는 것도 보여줌
-- 이 프로젝트: 적용(005-01부터)하고, jhs512에는 없는 **MockMvc 컨트롤러 테스트**도 추가(002-02부터, 028-02 기준 61개)
+- 이 프로젝트: 적용(005-01부터). 강의에 없는 MockMvc 컨트롤러 테스트를 002-02부터 넣었다가 029-01에서 제거
 
 ## 8. URL
 
@@ -80,26 +80,32 @@
 ## 두 강의 모두 다루지 않은 것
 
 `Rq`, `RsData`, `ServiceException`, `GlobalExceptionHandler`, QueryDSL, DTO 계층, MockMvc 테스트.
-이 중 MockMvc 테스트만 도입했고, 나머지는 쓰지 않았습니다.
+모두 쓰지 않습니다(MockMvc 테스트는 넣었다가 029-01에서 제거).
 
-## 책보다 나아진 점 (jhs512 강의 밖에서 추가로 바꾼 것)
+## 강의 근거 없이 바꿨다가 책대로 되돌린 것 (029)
 
-| 커밋 | 책 | 이 프로젝트 |
-|---|---|---|
-| 017-01 | `createDate` 내림차순 | id 내림차순: 같은 시각에 저장된 글도 순서가 일정하고 PK 인덱스 사용 |
-| 019-01 | 질문마다 답변 SELECT(N+1) | `default_batch_fetch_size: 100`으로 IN 쿼리 한 번 |
-| 021-01 | 중복 가입을 `DataIntegrityViolationException`으로 처리 | 저장 전 `existsBy`로 검사, 필드별 오류. `DelegatingPasswordEncoder`(`{bcrypt}` 접두어) |
-| 022-01 | GET 로그아웃 링크 | CSRF 토큰을 포함한 POST 로그아웃 |
-| 024 | 권한 없음 400, GET 삭제 링크 | 권한 없음 403, POST 삭제 |
-| 027-01 | 기본 `HtmlRenderer`(사용자 HTML이 그대로 출력되어 XSS 가능) | `escapeHtml(true)`, `sanitizeUrls(true)` |
-| 028 | 검색어가 없어도 join 쿼리, 숨김 폼 + JS 페이징 | 검색어 없으면 `findAll`, GET 폼과 URL 파라미터로 JS 없이 페이징 |
+jhs512 강의에 없는 변경을 묻지 않고 넣었던 것들입니다. 029 단위에서 책 동작으로 되돌립니다.
+Boot 4·Security 7 때문에 책 코드가 그대로는 동작하지 않는 부분만 바꾼 채로 둡니다.
+
+| 넣었던 커밋 | 강의 밖 변경 | 책 동작 | 되돌린 커밋 |
+|---|---|---|---|
+| 002-02~ | MockMvc 컨트롤러 테스트, MarkdownRendererTest | 컨트롤러 테스트 없음 | 029-01 |
+| 017-01, 017-02 | id 내림차순, 페이지 번호 1부터 표시 | `createDate` 내림차순, 0부터 표시 | 예정 |
+| 019-01 | `default_batch_fetch_size: 100` | 질문마다 답변 SELECT | 예정 |
+| 020-01 | `frameOptions().sameOrigin()`, `@EnableWebSecurity` 생략 | `XFrameOptionsHeaderWriter`, `@EnableWebSecurity` | 예정 |
+| 021-01 | 저장 전 `existsBy` 검사·필드별 오류, `DelegatingPasswordEncoder`, 비밀번호 확인은 다른 오류 없을 때만 | `DataIntegrityViolationException` 처리, `BCryptPasswordEncoder` | 예정 |
+| 022-01 | POST 로그아웃, `User.withUsername` 빌더, `AuthenticationManager` 미등록, 내비게이션 바 사용자ID | GET 로그아웃 링크, `new User(..., authorities)`, `AuthenticationManager` 빈 | 예정 |
+| 023-02 | 비로그인 답변창 안내 문구 | 비활성 입력창만 | 예정 |
+| 024 | 권한 없음 403, `isAuthoredBy` 메서드 | 400(`BAD_REQUEST`), 템플릿·컨트롤러에서 username 비교 | 예정 |
+| 025-01 | POST 추천 | GET 추천 링크(JS confirm) | 예정 |
+| 027-01 | `escapeHtml(true)`, `sanitizeUrls(true)` | 기본 `HtmlRenderer` | 예정 |
+| 028 | 검색어 없으면 `findAll`, GET 폼·URL 파라미터 페이징 | 항상 검색 쿼리, 숨김 폼 + JS 페이징 | 예정 |
 
 ## 진행하면서 알게 된 것
 
 - **Boot 4 / Hibernate 7**
   - dialect를 지정하지 않아도 H2Dialect를 자동 선택(003-01)
   - H2 2.x에서 `columnDefinition = "TEXT"`는 `VARCHAR(1000000000)`으로 생성됨(004-01)
-  - `@AutoConfigureMockMvc` 패키지가 `org.springframework.boot.webmvc.test.autoconfigure`로 바뀜(002-02)
 - **Spring Security 7**
   - `AntPathRequestMatcher`가 없어져 `anyRequest()`와 경로 문자열 사용(020-01)
   - test 프로필은 H2 콘솔이 꺼져 있어 `PathRequest.toH2Console()`이 빈을 못 찾음 → `"/h2-console/**"`(020-01)
