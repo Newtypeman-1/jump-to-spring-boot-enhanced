@@ -324,3 +324,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: SecurityConfig에 @EnableWebSecurity를 붙이고, frameOptions().sameOrigin() 대신 XFrameOptionsHeaderWriter(SAMEORIGIN) 사용
 - 이유: 강의에 없는 간소화라 책 3-05 코드로 되돌림
 - 결과: 테스트 통과, 브라우저에서 H2 콘솔 응답의 X-Frame-Options: SAMEORIGIN 확인
+
+### 029-05 책 기준 되돌리기(책 3-06), DataIntegrityViolationException과 BCryptPasswordEncoder
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/029-05)
+- 작업: 가입 중복을 저장 전 existsBy 검사 대신 저장 시 DataIntegrityViolationException으로 처리, DelegatingPasswordEncoder 대신 BCryptPasswordEncoder
+- 이유: 강의에 없는 변경이라 책 3-06 코드로 되돌림
+- 결과: 테스트 통과, 브라우저에서 중복 가입 시 "이미 등록된 사용자입니다.", 새 가입은 $2a$ 해시로 저장 확인

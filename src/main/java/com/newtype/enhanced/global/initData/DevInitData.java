@@ -37,7 +37,7 @@ public class DevInitData {
     // 개발용 계정: admin, user1, user2 (비밀번호는 모두 1234)
     @Transactional
     public void work0() {
-        if (userService.existsByUsername("admin")) return;
+        if (userService.findByUsername("admin").isPresent()) return;
 
         userService.create("admin", "1234", "admin@test.com");
         userService.create("user1", "1234", "user1@test.com");
