@@ -89,8 +89,7 @@
         <!-- 답변 작성 -->
         <form th:action="@{|/answer/create/${question.id}|}" th:object="${form}" method="post" class="my-3">
             <th:block th:replace="~{global/fragments/form_errors :: formErrorsFragment}"></th:block>
-            <textarea sec:authorize="isAnonymous()" disabled class="form-control" rows="10"
-                      placeholder="로그인 후 답변을 작성할 수 있습니다."></textarea>
+            <textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" class="form-control" rows="10"></textarea>
             <textarea sec:authorize="isAuthenticated()" th:field="*{content}" rows="10" class="form-control"></textarea>
             <input type="submit" value="답변등록" class="btn btn-primary my-2">
         </form>
