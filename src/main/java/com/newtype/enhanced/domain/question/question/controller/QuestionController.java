@@ -107,8 +107,7 @@ public class QuestionController {
     @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public String showModify(@PathVariable int id, Principal principal, Model model) {
-        Question question = findQuestionOwnedBy(id, principal);
-        model.addAttribute("question", question);
+        Question question = findQuestionOwnedBy(id, principal, "수정권한이 없습니다.");
         model.addAttribute("form", new ModifyForm(question.getSubject(), question.getContent()));
         return "question/question/modify";
     }
@@ -120,13 +119,11 @@ public class QuestionController {
             @PathVariable int id,
             @Valid @ModelAttribute("form") ModifyForm form,
             BindingResult bindingResult,
-            Principal principal,
-            Model model
+            Principal principal
     ) {
-        Question question = findQuestionOwnedBy(id, principal);
+        Question question = findQuestionOwnedBy(id, principal, "수정권한이 없습니다.");
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("question", question);
             return "question/question/modify";
         }
 
@@ -138,7 +135,7 @@ public class QuestionController {
     @PreAuthorize("isAuthenticated()")
     @Transactional
     public String delete(@PathVariable int id, Principal principal) {
-        Question question = findQuestionOwnedBy(id, principal);
+        Question question = findQuestionOwnedBy(id, principal, "삭제권한이 없습니다.");
         questionService.delete(question);
         return "redirect:/";
     }
@@ -153,12 +150,12 @@ public class QuestionController {
         return "redirect:/question/detail/%d".formatted(id);
     }
 
-    private Question findQuestionOwnedBy(int id, Principal principal) {
+    private Question findQuestionOwnedBy(int id, Principal principal, String deniedMessage) {
         Question question = questionService.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("question not found"));
 
-        if (!question.isAuthoredBy(principal.getName())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "권한이 없습니다.");
+        if (!question.getAuthor().getUsername().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, deniedMessage);
         }
 
         return question;

@@ -42,10 +42,6 @@ public class Answer extends BaseEntity {
         this.content = content;
     }
 
-    public boolean isAuthoredBy(String username) {
-        return author != null && author.getUsername().equals(username);
-    }
-
     public void vote(SiteUser user) {
         voter.add(user);
     }

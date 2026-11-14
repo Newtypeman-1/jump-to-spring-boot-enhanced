@@ -9,7 +9,7 @@
 <th:block layout:fragment="content">
     <div class="container">
         <h5 class="my-3 border-bottom pb-2">답변 수정</h5>
-        <form th:action="@{|/answer/modify/${answer.id}|}" th:object="${form}" method="post">
+        <form th:action th:object="${form}" method="post">
             <th:block th:replace="~{global/fragments/form_errors :: formErrorsFragment}"></th:block>
             <div class="mb-3">
                 <label for="content" class="form-label">내용</label>

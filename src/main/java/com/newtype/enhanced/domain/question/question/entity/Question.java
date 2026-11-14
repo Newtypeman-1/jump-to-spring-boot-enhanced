@@ -61,10 +61,6 @@ public class Question extends BaseEntity {
         answerList.remove(answer);
     }
 
-    public boolean isAuthoredBy(String username) {
-        return author != null && author.getUsername().equals(username);
-    }
-
     public void vote(SiteUser user) {
         voter.add(user);
     }
