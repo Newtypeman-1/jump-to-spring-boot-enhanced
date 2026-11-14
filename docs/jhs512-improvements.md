@@ -68,7 +68,8 @@
 - 책: `/question/list`, `/question/detail/{id}`, `/answer/create/{id}`...
 - jhs512(14168): `/posts`, `/posts/{id}`, `PUT /posts/{id}/modify`, `DELETE /posts/{postId}/comments/{id}/delete`(hidden method 필터)
 - 이 프로젝트: 1단계는 **책 URL을 그대로** 사용(완료). RESTful 리팩터링은 아직 하지 않음
-  - 단, 상태를 바꾸는 요청(삭제, 추천)은 책의 GET 링크 대신 CSRF 토큰을 포함한 POST로 만듦(로그아웃은 029-06에서 책처럼 GET 링크로 되돌림)
+  - 단, 삭제는 jhs512(14168, `DELETE` + CSRF 토큰)처럼 책의 GET 링크 대신 CSRF 토큰을 포함한 POST로 만듦
+    (로그아웃·추천도 POST로 했다가 강의 근거가 없어 029-06, 029-09에서 책처럼 GET 링크로 되돌림)
 
 ## 9. 화면
 
@@ -97,7 +98,7 @@ Boot 4·Security 7 때문에 책 코드가 그대로는 동작하지 않는 부�
 | 022-01 | POST 로그아웃, `User.withUsername` 빌더, `AuthenticationManager` 미등록, 내비게이션 바 사용자ID | GET 로그아웃 링크, `new User(..., authorities)`, `AuthenticationManager` 빈 | 029-06 |
 | 023-02 | 비로그인 답변창 안내 문구 | 비활성 입력창만 | 029-07 |
 | 024 | 권한 없음 403, `isAuthoredBy` 메서드 | 400(`BAD_REQUEST`), 템플릿·컨트롤러에서 username 비교 | 029-08 |
-| 025-01 | POST 추천 | GET 추천 링크(JS confirm) | 예정 |
+| 025-01 | POST 추천 | GET 추천 링크(JS confirm) | 029-09 |
 | 027-01 | `escapeHtml(true)`, `sanitizeUrls(true)` | 기본 `HtmlRenderer` | 예정 |
 | 028 | 검색어 없으면 `findAll`, GET 폼·URL 파라미터 페이징 | 항상 검색 쿼리, 숨김 폼 + JS 페이징 | 예정 |
 

@@ -140,7 +140,7 @@ public class QuestionController {
         return "redirect:/";
     }
 
-    @PostMapping("/vote/{id}")
+    @GetMapping("/vote/{id}")
     @PreAuthorize("isAuthenticated()")
     @Transactional
     public String vote(@PathVariable int id, Principal principal) {

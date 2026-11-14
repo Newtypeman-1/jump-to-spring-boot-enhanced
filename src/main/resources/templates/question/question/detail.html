@@ -27,13 +27,11 @@
                     </div>
                 </div>
                 <div class="my-3">
-                    <form th:action="@{|/question/vote/${question.id}|}" method="post" class="d-inline"
-                          onsubmit="return confirm('정말로 추천하시겠습니까?');">
-                        <button type="submit" class="btn btn-sm btn-outline-secondary">
-                            추천
-                            <span class="badge rounded-pill bg-success" th:text="${question.voter.size()}"></span>
-                        </button>
-                    </form>
+                    <a href="javascript:void(0);" class="recommend btn btn-sm btn-outline-secondary"
+                       th:data-uri="@{|/question/vote/${question.id}|}">
+                        추천
+                        <span class="badge rounded-pill bg-success" th:text="${question.voter.size()}"></span>
+                    </a>
                 </div>
                 <div class="my-3" sec:authorize="isAuthenticated()"
                      th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}">
@@ -67,13 +65,11 @@
                     </div>
                 </div>
                 <div class="my-3">
-                    <form th:action="@{|/answer/vote/${answer.id}|}" method="post" class="d-inline"
-                          onsubmit="return confirm('정말로 추천하시겠습니까?');">
-                        <button type="submit" class="btn btn-sm btn-outline-secondary">
-                            추천
-                            <span class="badge rounded-pill bg-success" th:text="${answer.voter.size()}"></span>
-                        </button>
-                    </form>
+                    <a href="javascript:void(0);" class="recommend btn btn-sm btn-outline-secondary"
+                       th:data-uri="@{|/answer/vote/${answer.id}|}">
+                        추천
+                        <span class="badge rounded-pill bg-success" th:text="${answer.voter.size()}"></span>
+                    </a>
                 </div>
                 <div class="my-3" sec:authorize="isAuthenticated()"
                      th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}">
@@ -95,5 +91,15 @@
         </form>
     </div>
 </th:block>
+<script layout:fragment="script" type="text/javascript">
+    const recommend_elements = document.getElementsByClassName("recommend");
+    Array.from(recommend_elements).forEach(function (element) {
+        element.addEventListener('click', function () {
+            if (confirm("정말로 추천하시겠습니까?")) {
+                location.href = this.dataset.uri;
+            }
+        });
+    });
+</script>
 </body>
 </html>

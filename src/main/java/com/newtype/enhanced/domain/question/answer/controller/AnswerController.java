@@ -107,7 +107,7 @@ public class AnswerController {
         return "redirect:/question/detail/%d".formatted(question.getId());
     }
 
-    @PostMapping("/vote/{id}")
+    @GetMapping("/vote/{id}")
     @PreAuthorize("isAuthenticated()")
     @Transactional
     public String vote(@PathVariable int id, Principal principal) {
