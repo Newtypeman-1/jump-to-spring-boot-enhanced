@@ -354,3 +354,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: 추천을 POST 폼 대신 책처럼 GET 링크(class=recommend, data-uri)와 자바스크립트 confirm으로
 - 이유: POST 추천은 강의에 없는 변경이라 책 3-10으로 되돌림(삭제의 POST는 jhs512 근거가 있어 유지)
 - 결과: 테스트 통과, 브라우저에서 답변 추천 클릭 시 추천 수 1 증가와 #answer_1 앵커 이동 확인
+
+### 029-10 책 기준 되돌리기(책 3-12), 기본 HtmlRenderer
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/029-10)
+- 작업: MarkdownRenderer의 escapeHtml(true), sanitizeUrls(true) 설정을 빼고 책처럼 HtmlRenderer.builder().build()
+- 이유: XSS 차단 설정은 강의에 없는 변경이라 책 3-12로 되돌림
+- 결과: 테스트 통과, 브라우저에서 본문의 HTML 태그가 그대로 렌더링되는 것 확인(책과 같은 동작)

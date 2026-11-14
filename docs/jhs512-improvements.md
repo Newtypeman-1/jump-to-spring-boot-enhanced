@@ -99,7 +99,7 @@ Boot 4·Security 7 때문에 책 코드가 그대로는 동작하지 않는 부�
 | 023-02 | 비로그인 답변창 안내 문구 | 비활성 입력창만 | 029-07 |
 | 024 | 권한 없음 403, `isAuthoredBy` 메서드 | 400(`BAD_REQUEST`), 템플릿·컨트롤러에서 username 비교 | 029-08 |
 | 025-01 | POST 추천 | GET 추천 링크(JS confirm) | 029-09 |
-| 027-01 | `escapeHtml(true)`, `sanitizeUrls(true)` | 기본 `HtmlRenderer` | 예정 |
+| 027-01 | `escapeHtml(true)`, `sanitizeUrls(true)` | 기본 `HtmlRenderer` | 029-10 |
 | 028 | 검색어 없으면 `findAll`, GET 폼·URL 파라미터 페이징 | 항상 검색 쿼리, 숨김 폼 + JS 페이징 | 예정 |
 
 ## 진행하면서 알게 된 것
