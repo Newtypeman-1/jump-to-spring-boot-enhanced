@@ -11,7 +11,7 @@
 
 | 항목 | 책 | jhs512 | 이 프로젝트 |
 |---|---|---|---|
-| 버전 | Boot 3.2.1, Java 19, Groovy | Boot 4.1.2, Java 25, Kotlin DSL | jhs512와 같음(001-01) |
+| 버전 | Boot 3.2.1, Java 21, Groovy | Boot 4.1.2, Java 25, Kotlin DSL | jhs512와 같음(001-01) |
 | 설정 파일 | `application.properties` 한 개 | `application.yaml` + `-dev`(H2 파일 DB) + `-test`(H2 메모리 DB), 기본 프로필 dev | 적용(002-01, DB 설정은 003-01) |
 | SQL 로그 | `show_sql` | `format_sql`, `highlight_sql`, `use_sql_comments`, 바인딩 파라미터 TRACE, 트랜잭션 TRACE | 적용(004-03) |
 | H2 | 기본 설정 | `;MODE=MySQL`, DB 파일은 `.gitignore`에 추가 | 적용(003-01) |
@@ -39,7 +39,7 @@
 - **애그리거트 단위 저장소**: jhs512는 자식(Answer/PostComment)에 Repository를 만들지 않고 부모를 통해 다룹니다.
   이 프로젝트도 답변 생성·삭제는 Question을 통해 하고(005-04, 024-04),
   답변 id만으로 찾아야 하는 답변 수정 URL이 생긴 024-03에서 AnswerRepository·AnswerService(조회 전용)를 추가했습니다.
-- **`@Transactional` 위치**: 책은 서비스, jhs512는 컨트롤러(조회는 `readOnly = true`)에 붙입니다.
+- **`@Transactional` 위치**: 책 본편 코드에는 없고(2-05 테스트에만 잠깐 나옴), jhs512는 컨트롤러(조회는 `readOnly = true`)에 붙입니다.
   여기에 hikari `auto-commit: false`를 함께 씁니다. 이 프로젝트도 컨트롤러 방식을 씁니다(008-02에서 `auto-commit: false`와 함께 적용).
 - **조회 반환**: 서비스는 `Optional`을 돌려주고, 없으면 컨트롤러에서 예외를 던집니다(009-01).
 
