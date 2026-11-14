@@ -312,3 +312,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: 목록 정렬을 id 대신 createDate 내림차순으로, 페이지 번호 표시를 page+1 대신 page로
 - 이유: id 정렬과 1부터 표시는 강의에 없는 변경이라 책대로 되돌림
 - 결과: 테스트 통과, 브라우저에서 페이지 번호가 0부터 표시되는 것 확인
+
+### 029-03 책 기준 되돌리기(책 3-04), batch fetch 설정 제거
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/029-03)
+- 작업: application.yaml에서 default_batch_fetch_size 설정 제거
+- 이유: N+1을 IN 쿼리로 묶는 설정은 강의에 없는 변경이라 책대로 되돌림
+- 결과: 테스트 통과, 목록 화면에서 질문마다 답변 SELECT가 나가는 것을 SQL 로그로 확인
