@@ -318,3 +318,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: application.yaml에서 default_batch_fetch_size 설정 제거
 - 이유: N+1을 IN 쿼리로 묶는 설정은 강의에 없는 변경이라 책대로 되돌림
 - 결과: 테스트 통과, 목록 화면에서 질문마다 답변 SELECT가 나가는 것을 SQL 로그로 확인
+
+### 029-04 책 기준 되돌리기(책 3-05), XFrameOptionsHeaderWriter와 @EnableWebSecurity
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/029-04)
+- 작업: SecurityConfig에 @EnableWebSecurity를 붙이고, frameOptions().sameOrigin() 대신 XFrameOptionsHeaderWriter(SAMEORIGIN) 사용
+- 이유: 강의에 없는 간소화라 책 3-05 코드로 되돌림
+- 결과: 테스트 통과, 브라우저에서 H2 콘솔 응답의 X-Frame-Options: SAMEORIGIN 확인

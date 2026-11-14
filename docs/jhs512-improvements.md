@@ -92,7 +92,7 @@ Boot 4·Security 7 때문에 책 코드가 그대로는 동작하지 않는 부�
 | 002-02~ | MockMvc 컨트롤러 테스트, MarkdownRendererTest | 컨트롤러 테스트 없음 | 029-01 |
 | 017-01, 017-02 | id 내림차순, 페이지 번호 1부터 표시 | `createDate` 내림차순, 0부터 표시 | 029-02 |
 | 019-01 | `default_batch_fetch_size: 100` | 질문마다 답변 SELECT | 029-03 |
-| 020-01 | `frameOptions().sameOrigin()`, `@EnableWebSecurity` 생략 | `XFrameOptionsHeaderWriter`, `@EnableWebSecurity` | 예정 |
+| 020-01 | `frameOptions().sameOrigin()`, `@EnableWebSecurity` 생략 | `XFrameOptionsHeaderWriter`, `@EnableWebSecurity` | 029-04 |
 | 021-01 | 저장 전 `existsBy` 검사·필드별 오류, `DelegatingPasswordEncoder`, 비밀번호 확인은 다른 오류 없을 때만 | `DataIntegrityViolationException` 처리, `BCryptPasswordEncoder` | 예정 |
 | 022-01 | POST 로그아웃, `User.withUsername` 빌더, `AuthenticationManager` 미등록, 내비게이션 바 사용자ID | GET 로그아웃 링크, `new User(..., authorities)`, `AuthenticationManager` 빈 | 예정 |
 | 023-02 | 비로그인 답변창 안내 문구 | 비활성 입력창만 | 예정 |
