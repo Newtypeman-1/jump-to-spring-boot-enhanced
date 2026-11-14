@@ -360,3 +360,9 @@ jhs512 강의(14163 점프투스프링부트 개선, 14168 JPA·타임리프 개
 - 작업: MarkdownRenderer의 escapeHtml(true), sanitizeUrls(true) 설정을 빼고 책처럼 HtmlRenderer.builder().build()
 - 이유: XSS 차단 설정은 강의에 없는 변경이라 책 3-12로 되돌림
 - 결과: 테스트 통과, 브라우저에서 본문의 HTML 태그가 그대로 렌더링되는 것 확인(책과 같은 동작)
+
+### 029-11 책 기준 되돌리기(책 3-13), 검색 쿼리와 숨김 폼 페이징
+- [링크](https://github.com/Newtypeman-1/jump-to-spring-boot-enhanced/commit/029-11)
+- 작업: 검색어가 없어도 항상 findAllByKeyword를 쓰고, 검색창과 페이지 링크를 책처럼 숨김 폼(searchForm)과 자바스크립트로 처리
+- 이유: 검색어 분기와 GET 폼·URL 페이징은 강의에 없는 변경이라 책 3-13으로 되돌림
+- 결과: 테스트 통과, 브라우저에서 "01" 검색 13건·2페이지, 1페이지 클릭 시 kw=01&page=1 유지 확인

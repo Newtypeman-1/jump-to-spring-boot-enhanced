@@ -13,11 +13,10 @@
                 <a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
             </div>
             <div class="col-6">
-                <!-- 검색: GET 폼으로 kw를 보내고 1페이지부터 조회 -->
-                <form th:action="@{/question/list}" method="get" class="input-group">
-                    <input type="text" name="kw" class="form-control" th:value="${kw}" placeholder="검색어">
-                    <button class="btn btn-outline-secondary" type="submit">찾기</button>
-                </form>
+                <div class="input-group">
+                    <input type="text" id="search_kw" class="form-control" th:value="${kw}">
+                    <button class="btn btn-outline-secondary" type="button" id="btn_search">찾기</button>
+                </div>
             </div>
         </div>
         <table class="table">
@@ -46,19 +45,39 @@
         <div th:if="${!paging.isEmpty()}">
             <ul class="pagination justify-content-center">
                 <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
-                    <a class="page-link" th:href="@{/question/list(page=${paging.number - 1}, kw=${kw})}">이전</a>
+                    <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number - 1}">이전</a>
                 </li>
                 <li th:each="page : ${#numbers.sequence(0, paging.totalPages - 1)}"
                     th:if="${page >= paging.number - 5 and page <= paging.number + 5}"
                     th:classappend="${page == paging.number} ? 'active'" class="page-item">
-                    <a th:text="${page}" class="page-link" th:href="@{/question/list(page=${page}, kw=${kw})}"></a>
+                    <a th:text="${page}" class="page-link" href="javascript:void(0)" th:data-page="${page}"></a>
                 </li>
                 <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
-                    <a class="page-link" th:href="@{/question/list(page=${paging.number + 1}, kw=${kw})}">다음</a>
+                    <a class="page-link" href="javascript:void(0)" th:data-page="${paging.number + 1}">다음</a>
                 </li>
             </ul>
         </div>
+        <!-- 검색어와 페이지를 함께 보내는 숨김 폼 -->
+        <form th:action="@{/question/list}" method="get" id="searchForm">
+            <input type="hidden" id="kw" name="kw" th:value="${kw}">
+            <input type="hidden" id="page" name="page" th:value="${paging.number}">
+        </form>
     </div>
 </th:block>
+<script layout:fragment="script" type="text/javascript">
+    const page_elements = document.getElementsByClassName("page-link");
+    Array.from(page_elements).forEach(function (element) {
+        element.addEventListener('click', function () {
+            document.getElementById('page').value = this.dataset.page;
+            document.getElementById('searchForm').submit();
+        });
+    });
+    const btn_search = document.getElementById("btn_search");
+    btn_search.addEventListener('click', function () {
+        document.getElementById('kw').value = document.getElementById('search_kw').value;
+        document.getElementById('page').value = 0;  // 검색버튼을 클릭할 경우 0페이지부터 조회
+        document.getElementById('searchForm').submit();
+    });
+</script>
 </body>
 </html>
